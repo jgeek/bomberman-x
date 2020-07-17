@@ -37,6 +37,7 @@ public class GameBoard extends StackPane {
         for (int row = 0; row < data.length; row++) {
             for (int col = 0; col < data[row].length; col++) {
                 Tile tile = createTile(row, col, data[row][col]);
+                tiles.add(tile);
                 getChildren().add(tile);
             }
         }
@@ -47,7 +48,6 @@ public class GameBoard extends StackPane {
         Bomberman bomberman = null;
         switch (c) {
             case 'w':
-                bomberman = new Bomberman(this, "asghar", Bomberman.SYSTEM_NAMES.from('1'), col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
                 return new Wall(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
             case 'b':
                 return new Block(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
@@ -55,7 +55,7 @@ public class GameBoard extends StackPane {
                 return new FreeSpace(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
             default:
                 Tile tile = new FreeSpace(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
-                bomberman = new Bomberman(this, "asghar", Bomberman.SYSTEM_NAMES.from(c), col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
+                bomberman = new Bomberman(this, "asghar", Bomberman.SYSTEM_NAMES.from(c), col * Statics.TILE_SIZE, row * Statics.TILE_SIZE, row, col);
 //                tile.getChildren().add(bomberman);
                 bombermans.add(bomberman);
                 return tile;
@@ -80,5 +80,9 @@ public class GameBoard extends StackPane {
 
     public int getMaxY() {
         return maxY;
+    }
+
+    public List<Tile> getTiles() {
+        return tiles;
     }
 }

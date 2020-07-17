@@ -3,6 +3,7 @@ package ir.ac.kntu.components;
 import ir.ac.kntu.Statics;
 import ir.ac.kntu.Utils;
 import ir.ac.kntu.actions.UserAction;
+import ir.ac.kntu.components.tiles.Tile;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -86,11 +87,14 @@ public class Bomberman extends ImageView {
     private int speed = 60;
     private int maxBombs = Statics.BOMBERMAN_MAX_CONCURRENT_BOMBS;
     private List<Bomb> bombs = new ArrayList<>();
+    private int row, col;
 
-    public Bomberman(GameBoard board, String username, SYSTEM_NAMES systemName, int x, int y) {
+    public Bomberman(GameBoard board, String username, SYSTEM_NAMES systemName, int x, int y, int row, int col) {
         this.board = board;
         this.username = username;
         this.systemName = systemName;
+        this.row = row;
+        this.col = col;
         setTranslateX(x);
         setTranslateY(y);
         setFitWidth(Statics.BOMBERMAN_WIDTH);
@@ -116,7 +120,7 @@ public class Bomberman extends ImageView {
 
     public void moveX(Direction direction) {
 
-//        getChildren().remove(currentView);
+
         if (direction == Direction.RIGHT) {
             systemName.rightMoving.setTranslateX(currentView.getTranslateX());
             systemName.rightMoving.setTranslateY(currentView.getTranslateY());
@@ -126,36 +130,20 @@ public class Bomberman extends ImageView {
             systemName.leftMoving.setTranslateY(currentView.getTranslateY());
             currentView = systemName.leftMoving;
         }
-        double oldX = getTranslateX();
-        double newX = getTranslateX() + (direction.value * speed);
-        if (newX < board.getMinX() || newX > board.getMaxX()) {
+
+        double newX = checkMovement(direction);
+        if (newX < 0) {
             return;
         }
-//        double newX = currentView.getTranslateX() + (direction.value * speed);
-        currentView.setTranslateX(newX);
-//        getChildren().add(currentView);
         setTranslateX(newX);
-
+        addCol(direction);
+        checkStatus();
         System.out.println("x " + getTranslateX() + " y " + getTranslateY());
-
-
-        //Setting the value of the transition along the x axis.
-        translateTransition.setByX(newX - oldX);
-
-        //Setting the cycle count for the transition
-//        translateTransition.setCycleCount(50);
-
-        //Setting auto reverse value to false
-        translateTransition.setAutoReverse(false);
-
-        //Playing the animation
-//        translateTransition.play();
     }
 
     public void moveY(Direction direction) {
-//        System.out.println("x " + currentView.getTranslateX()+ " y "+ currentView.getTranslateY());
 
-//        getChildren().remove(currentView);
+        checkMovement(direction);
         if (direction == Direction.UP) {
             systemName.upMoving.setTranslateX(currentView.getTranslateX());
             systemName.upMoving.setTranslateY(currentView.getTranslateY());
@@ -165,18 +153,61 @@ public class Bomberman extends ImageView {
             systemName.downMoving.setTranslateY(currentView.getTranslateY());
             currentView = systemName.downMoving;
         }
-        double newY = getTranslateY() + (direction.value * speed);
-        if (newY < board.getMinY() || newY > board.getMaxY()) {
+
+        double newY = checkMovement(direction);
+        if (newY < 0) {
             return;
         }
-//        double newY = currentView.getTranslateY() + (direction.value * speed);
-        currentView.setTranslateY(newY);
-//        getChildren().add(currentView);
         setTranslateY(newY);
-
+        addRow(direction);
+        checkStatus();
         System.out.println("x " + getTranslateX() + " y " + getTranslateY());
 
     }
+
+    private void checkStatus() {
+
+    }
+
+    private double checkMovement(Direction direction) {
+
+        double newValue = 0;
+        if (direction == Direction.LEFT || direction == Direction.RIGHT) {
+            newValue = getTranslateX() + (direction.value * speed);
+            if (newValue < board.getMinX() || newValue > board.getMaxX()) {
+                return -1;
+            }
+        } else {
+            newValue = getTranslateY() + (direction.value * speed);
+            if (newValue < board.getMinY() || newValue > board.getMaxY()) {
+                return -1;
+            }
+        }
+        int nextRow = row;
+        int nextCol = col;
+        switch (direction) {
+            case UP:
+                nextRow--;
+                break;
+            case DOWN:
+                nextRow++;
+                break;
+            case LEFT:
+                nextCol--;
+                break;
+            case RIGHT:
+                nextCol++;
+                break;
+        }
+
+        for (Tile tile : board.getTiles()) {
+            if (tile.getRow() == nextRow && tile.getCol() == nextCol) {
+                return tile.canPassThrow(direction) ? newValue : -1;
+            }
+        }
+        throw new IllegalStateException(String.format("No tile found in row %s, col %s", nextRow, nextCol));
+    }
+
 
     public void insertBomb() {
         if (bombs.size() >= maxBombs) {
@@ -201,6 +232,14 @@ public class Bomberman extends ImageView {
         };
         Timer timer = new Timer();
         timer.schedule(task, bomb.getDelay());
+    }
+
+    public void addRow(Direction direction) {
+        row += direction.value;
+    }
+
+    public void addCol(Direction direction) {
+        col += direction.value;
     }
 
     public String getUsername() {

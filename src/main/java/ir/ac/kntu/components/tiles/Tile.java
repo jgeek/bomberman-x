@@ -1,12 +1,13 @@
 package ir.ac.kntu.components.tiles;
 
+import ir.ac.kntu.components.Bomberman;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 
 public abstract class Tile extends StackPane {
 
     private ImageView baseView;
-//    private int width, height;
+    //    private int width, height;
     private int row, col;
 
     public Tile(int row, int col, int width, int height, int x, int y) {
@@ -31,4 +32,6 @@ public abstract class Tile extends StackPane {
     public int getCol() {
         return col;
     }
+
+    public abstract boolean canPassThrow(Bomberman.Direction direction);
 }

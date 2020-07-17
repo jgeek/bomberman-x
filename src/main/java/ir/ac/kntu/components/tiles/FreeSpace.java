@@ -1,6 +1,7 @@
 package ir.ac.kntu.components.tiles;
 
 import ir.ac.kntu.Statics;
+import ir.ac.kntu.components.Bomberman;
 import javafx.scene.image.ImageView;
 
 public class FreeSpace extends Tile {
@@ -15,5 +16,10 @@ public class FreeSpace extends Tile {
 //        imageView.setTranslateX(x);
 //        imageView.setTranslateY(y);
         return imageView;
+    }
+
+    @Override
+    public boolean canPassThrow(Bomberman.Direction direction) {
+        return true;
     }
 }
