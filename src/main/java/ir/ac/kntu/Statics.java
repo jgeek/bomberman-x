@@ -5,9 +5,12 @@ import javafx.scene.image.Image;
 
 public class Statics {
 
-    public static final int BOMBERMAN_WIDTH = 55;
-    public static final int BOMBERMAN_HEIGHT = 55;
-    public static final int BOBM_SIZE = 30;
+    public static final int BOMBERMAN_WIDTH = 60;
+    public static final int BOMBERMAN_HEIGHT = 60;
+    public static final int BOMBERMAN_MAX_CONCURRENT_BOMBS = 2;
+    public static final int BOMB_SIZE = 40;
+    public static final int BOMB_DELAY = 3000;
+    public static final int BOMB_EXPLOSION_RANGE = 2;
     public static int TILE_SIZE = 60;
     public static int MAP_ROWS = 10;
     public static int MAP_COLS = 10;

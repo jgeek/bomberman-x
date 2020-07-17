@@ -4,14 +4,13 @@ import ir.ac.kntu.Statics;
 import ir.ac.kntu.Utils;
 import ir.ac.kntu.actions.UserAction;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 public class Bomberman extends ImageView {
@@ -84,7 +83,9 @@ public class Bomberman extends ImageView {
     private SYSTEM_NAMES systemName;
     private ImageView currentView;
     private Image currentImage;
-    private int speed = 5;
+    private int speed = 60;
+    private int maxBombs = Statics.BOMBERMAN_MAX_CONCURRENT_BOMBS;
+    private List<Bomb> bombs = new ArrayList<>();
 
     public Bomberman(GameBoard board, String username, SYSTEM_NAMES systemName, int x, int y) {
         this.board = board;
@@ -125,13 +126,17 @@ public class Bomberman extends ImageView {
             systemName.leftMoving.setTranslateY(currentView.getTranslateY());
             currentView = systemName.leftMoving;
         }
-        double oldX =  getTranslateX();
+        double oldX = getTranslateX();
         double newX = getTranslateX() + (direction.value * speed);
+        if (newX < board.getMinX() || newX > board.getMaxX()) {
+            return;
+        }
 //        double newX = currentView.getTranslateX() + (direction.value * speed);
         currentView.setTranslateX(newX);
 //        getChildren().add(currentView);
-        System.out.println("x " + getTranslateX() + " y " + getTranslateY());
+        setTranslateX(newX);
 
+        System.out.println("x " + getTranslateX() + " y " + getTranslateY());
 
 
         //Setting the value of the transition along the x axis.
@@ -145,7 +150,6 @@ public class Bomberman extends ImageView {
 
         //Playing the animation
 //        translateTransition.play();
-        setTranslateX(newX);
     }
 
     public void moveY(Direction direction) {
@@ -162,6 +166,9 @@ public class Bomberman extends ImageView {
             currentView = systemName.downMoving;
         }
         double newY = getTranslateY() + (direction.value * speed);
+        if (newY < board.getMinY() || newY > board.getMaxY()) {
+            return;
+        }
 //        double newY = currentView.getTranslateY() + (direction.value * speed);
         currentView.setTranslateY(newY);
 //        getChildren().add(currentView);
@@ -172,9 +179,28 @@ public class Bomberman extends ImageView {
     }
 
     public void insertBomb() {
-        Bomb bomb = new Bomb(getTranslateX(), getTranslateY());
-//        Bomb bomb = new Bomb(currentView.getTranslateX(), currentView.getTranslateY());
+        if (bombs.size() >= maxBombs) {
+            System.out.println(String.format("max bombs %s, current bombs %s", maxBombs, bombs.size()));
+            return;
+        }
+        Bomb bomb = new Bomb(board, getTranslateX(), getTranslateY(), Statics.BOMB_DELAY, Statics.BOMB_EXPLOSION_RANGE);
+        bombs.add(bomb);
         board.getChildren().add(bomb);
+        startBomb(this, bomb);
+    }
+
+    private void startBomb(Bomberman bomberman, Bomb bomb) {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    board.getChildren().remove(bomb);
+                    bomberman.getBombs().remove(bomb);
+                });
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(task, bomb.getDelay());
     }
 
     public String getUsername() {
@@ -187,5 +213,25 @@ public class Bomberman extends ImageView {
 
     public ImageView getCurrentView() {
         return currentView;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public int getMaxBombs() {
+        return maxBombs;
+    }
+
+    public void setMaxBombs(int maxBombs) {
+        this.maxBombs = maxBombs;
+    }
+
+    public List<Bomb> getBombs() {
+        return bombs;
     }
 }

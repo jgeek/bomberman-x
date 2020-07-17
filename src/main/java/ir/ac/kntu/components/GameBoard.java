@@ -15,12 +15,16 @@ public class GameBoard extends StackPane {
     private int rows;
     private int cols;
     private char[][] data;
-    List<Tile> tiles = new ArrayList<>();
-    List<Bomberman> bombermans = new ArrayList<>();
+    private List<Tile> tiles = new ArrayList<>();
+    private List<Bomberman> bombermans = new ArrayList<>();
+    private int minX, minY = 0;
+    private int maxX, maxY;
 
     public GameBoard(String name, char[][] data) {
         this.name = name;
         this.data = data;
+        maxX = (data[0].length - 1) * Statics.TILE_SIZE;
+        maxY = (data.length - 1) * Statics.TILE_SIZE;
     }
 
     public GameBoard(String name, int rows, int cols) {
@@ -29,40 +33,14 @@ public class GameBoard extends StackPane {
         this.cols = cols;
     }
 
-    public void load1() {
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                Tile block = new Block(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
-                Tile grass = new FreeSpace(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
-                tiles.add(row % 2 == 0 ? block : grass);
-                getChildren().add(row % 2 == 0 ? block : grass);
-            }
-        }
-    }
-
     public void load() {
         for (int row = 0; row < data.length; row++) {
             for (int col = 0; col < data[row].length; col++) {
                 Tile tile = createTile(row, col, data[row][col]);
-                if(tile != null){
-                    getChildren().add(tile);
-                }
+                getChildren().add(tile);
             }
         }
         getChildren().addAll(bombermans);
-
-        new Thread(() -> {
-            while (true) {
-                for (Bomberman b : bombermans) {
-//                    b.moveX();
-                }
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 
     private Tile createTile(int row, int col, char c) {
@@ -70,8 +48,6 @@ public class GameBoard extends StackPane {
         switch (c) {
             case 'w':
                 bomberman = new Bomberman(this, "asghar", Bomberman.SYSTEM_NAMES.from('1'), col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
-//                bombermans.add(bomberman);
-//                return null;
                 return new Wall(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
             case 'b':
                 return new Block(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
@@ -88,5 +64,21 @@ public class GameBoard extends StackPane {
 
     public List<Bomberman> getBombermans() {
         return bombermans;
+    }
+
+    public int getMinX() {
+        return minX;
+    }
+
+    public int getMinY() {
+        return minY;
+    }
+
+    public int getMaxX() {
+        return maxX;
+    }
+
+    public int getMaxY() {
+        return maxY;
     }
 }
