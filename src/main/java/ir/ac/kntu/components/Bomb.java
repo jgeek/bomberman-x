@@ -1,12 +1,11 @@
 package ir.ac.kntu.components;
 
-import ir.ac.kntu.Statics;
+import ir.ac.kntu.Constants;
 import ir.ac.kntu.Utils;
 import ir.ac.kntu.components.tiles.Block;
 import ir.ac.kntu.components.tiles.FreeSpace;
 import ir.ac.kntu.components.tiles.OneWay;
 import ir.ac.kntu.components.tiles.Tile;
-import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -30,9 +29,9 @@ public class Bomb extends ImageView implements Positionable {
         this.col = col;
         this.board = board;
         this.bomberman = bomberman;
-        setImage(Statics.BOMB_IMAGE);
-        setFitWidth(Statics.BOMB_SIZE);
-        setFitHeight(Statics.BOMB_SIZE);
+        setImage(Constants.BOMB_IMAGE);
+        setFitWidth(Constants.BOMB_SIZE);
+        setFitHeight(Constants.BOMB_SIZE);
 //        setViewport(new Rectangle2D(0, 0, 60, 60 ));
         setTranslateX(x);
         setTranslateY(y);
@@ -55,19 +54,19 @@ public class Bomb extends ImageView implements Positionable {
                         tile.getChildren().get(0).setVisible(false);
 
                         // show breaking block
-                        ImageView breakingBlock = new ImageView(Statics.BLOCK_BREAKING_IMAGE);
+                        ImageView breakingBlock = new ImageView(Constants.BLOCK_BREAKING_IMAGE);
                         breakingBlock.setFitWidth(tile.getWidth());
                         breakingBlock.setFitHeight(tile.getHeight());
                         tile.getChildren().add(breakingBlock);
                     } else {
-                        ImageView fire = new ImageView(Statics.EXPLOSION_IMAGE);
+                        ImageView fire = new ImageView(Constants.EXPLOSION_IMAGE);
                         fire.setFitWidth(tile.getWidth());
                         fire.setFitHeight(tile.getHeight());
                         tile.getChildren().add(fire);
                     }
                 } else if (tile instanceof FreeSpace) {
                     if (tile.getChildren().size() == 1) {
-                        ImageView fire = new ImageView(Statics.EXPLOSION_IMAGE);
+                        ImageView fire = new ImageView(Constants.EXPLOSION_IMAGE);
                         fire.setFitWidth(tile.getWidth());
                         fire.setFitHeight(tile.getHeight());
                         tile.getChildren().add(fire);
@@ -101,7 +100,7 @@ public class Bomb extends ImageView implements Positionable {
                         t.setInFire(false);
                     }
                 }
-            }, Statics.EXPLOSION_REMAIN_TIME);
+            }, Constants.EXPLOSION_REMAIN_TIME);
 
         }, 100);
         setExploded(true);

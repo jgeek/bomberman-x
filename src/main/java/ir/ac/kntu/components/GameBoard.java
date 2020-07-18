@@ -1,6 +1,6 @@
 package ir.ac.kntu.components;
 
-import ir.ac.kntu.Statics;
+import ir.ac.kntu.Constants;
 import ir.ac.kntu.Utils;
 import ir.ac.kntu.components.gifts.BombAdder;
 import ir.ac.kntu.components.gifts.BombBooster;
@@ -8,12 +8,18 @@ import ir.ac.kntu.components.gifts.Gift;
 import ir.ac.kntu.components.tiles.*;
 import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GameBoard extends StackPane {
+public class GameBoard extends Pane {
 
     private Bomberman systemBomber;
     private String name;
@@ -28,16 +34,26 @@ public class GameBoard extends StackPane {
     private List<Gift> gifts = new ArrayList<>();
     private Timer gameTimer;
     private boolean playing;
+    private VBox statusBar;
 
 
     public GameBoard(String name, char[][] data) {
         this.name = name;
         this.data = data;
-        maxX = (data[0].length - 1) * Statics.TILE_SIZE;
-        maxY = (data.length - 1) * Statics.TILE_SIZE;
+        maxX = (data[0].length - 1) * Constants.TILE_SIZE;
+        maxY = (data.length - 1) * Constants.TILE_SIZE;
+//        setWidth(maxX);
+//        setHeight(maxY);
     }
 
     public void load() {
+
+        ImageView bgView = new ImageView(Constants.BOMBERMAN_BG_IMAGE);
+//        bgView.setFitWidth(2000);
+//        bgView.setFitHeight(2000);
+        getChildren().add(bgView);
+
+
         for (int row = 0; row < data.length; row++) {
             for (int col = 0; col < data[row].length; col++) {
                 Tile tile = createTile(row, col, data[row][col]);
@@ -47,10 +63,20 @@ public class GameBoard extends StackPane {
             }
         }
         getChildren().addAll(bombermans);
+
+        statusBar = new VBox();
+        statusBar.setTranslateX(maxX + Constants.TILE_SIZE);
+        statusBar.setTranslateY(0);
+        statusBar.setPrefSize(200, maxY);
+        statusBar.getChildren().add(new Circle(10));
+        getChildren().add(statusBar);
+
         systemBomber = new Bomberman(this, "system", Bomberman.SYSTEM_NAMES.SYSTEM, 0, 0, 0, 0);
         systemBomber.setMaxBombs(1000);
         systemBomber.setRow(-1);
         systemBomber.setCol(-1);
+
+
     }
 
     public void startGame() {
@@ -60,13 +86,13 @@ public class GameBoard extends StackPane {
 
     private void startTimers() {
 
-        TimerTask task = new TimerTask() {
+        TimerTask giftGenerator = new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
                     Tile tile = findRandomFreeTile();
                     int index = new Random().nextInt(4);
-                    index = 3;
+//                    index = 3;
                     switch (index) {
                         case 0:
                             Gift gift = new BombBooster(GameBoard.this);
@@ -75,7 +101,7 @@ public class GameBoard extends StackPane {
                             break;
                         case 1:
                             Bomb bomb = new Bomb(GameBoard.this, systemBomber, tile.getTranslateX(), tile.getTranslateY(), tile.getRow(),
-                                    tile.getCol(), Statics.BOMB_DELAY, Statics.BOMB_EXPLOSION_RANGE);
+                                    tile.getCol(), Constants.BOMB_DELAY, Constants.BOMB_EXPLOSION_RANGE);
                             getChildren().add(bomb);
                             systemBomber.getBombs().add(bomb);
                             systemBomber.startBomb(bomb);
@@ -83,12 +109,13 @@ public class GameBoard extends StackPane {
                         case 2:
                             char[] signs = {'u', 'd', 'l', 'r'};
                             char c = signs[new Random().nextInt(signs.length)];
-                            Tile oneWay = new OneWay(tile.getRow(), tile.getCol(), Statics.TILE_SIZE, Statics.TILE_SIZE,
-                                    tile.getCol() * Statics.TILE_SIZE, tile.getRow() * Statics.TILE_SIZE, c);
+                            Tile oneWay = new OneWay(tile.getRow(), tile.getCol(), Constants.TILE_SIZE, Constants.TILE_SIZE,
+                                    tile.getCol() * Constants.TILE_SIZE, tile.getRow() * Constants.TILE_SIZE, c);
                             oneWay.init();
                             tile.setGuestTile(oneWay);
                             getChildren().add(oneWay);
                             disappearAfterAwhile(oneWay);
+                            break;
                         case 3:
                             Gift bombAdder = new BombAdder(GameBoard.this);
                             gifts.add(bombAdder);
@@ -100,14 +127,14 @@ public class GameBoard extends StackPane {
             }
         };
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(task, 0, Statics.GIFT_BOOST_INTERVAL);
+        timer.scheduleAtFixedRate(giftGenerator, 0, Constants.GIFT_BOOST_INTERVAL);
         timers.add(timer);
 
         gameTimer = Utils.runLater(() -> {
             timers.forEach(Timer::cancel);
             playing = false;
             System.out.println("Game is over");
-        }, Statics.GAME_TIME);
+        }, Constants.GAME_TIME);
 
     }
 
@@ -119,7 +146,7 @@ public class GameBoard extends StackPane {
         Timer timer = Utils.runLater(() -> {
             getChildren().remove(tile);
             tile.getHostTile().setGuestTile(null);
-        }, Statics.GIFT_BOOST_INTERVAL);
+        }, Constants.GIFT_BOOST_INTERVAL);
         timers.add(timer);
 
     }
@@ -133,25 +160,25 @@ public class GameBoard extends StackPane {
     }
 
     private Tile createTile(int row, int col, char c) {
-        Tile freeSpace = new FreeSpace(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
+        Tile freeSpace = new FreeSpace(row, col, Constants.TILE_SIZE, Constants.TILE_SIZE, col * Constants.TILE_SIZE, row * Constants.TILE_SIZE);
         switch (c) {
             case 'w':
-                return new Wall(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
+                return new Wall(row, col, Constants.TILE_SIZE, Constants.TILE_SIZE, col * Constants.TILE_SIZE, row * Constants.TILE_SIZE);
             case 'b':
-                Tile block = new Block(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
+                Tile block = new Block(row, col, Constants.TILE_SIZE, Constants.TILE_SIZE, col * Constants.TILE_SIZE, row * Constants.TILE_SIZE);
                 return block;
             case 'f':
-                return new FreeSpace(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
+                return new FreeSpace(row, col, Constants.TILE_SIZE, Constants.TILE_SIZE, col * Constants.TILE_SIZE, row * Constants.TILE_SIZE);
             case 'u':
             case 'd':
             case 'l':
             case 'r':
-                return new OneWay(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE, c);
+                return new OneWay(row, col, Constants.TILE_SIZE, Constants.TILE_SIZE, col * Constants.TILE_SIZE, row * Constants.TILE_SIZE, c);
             case '1':
             case '2':
             case '3':
             case '4':
-                Bomberman bomberman = new Bomberman(this, "Bomberman" + c, Bomberman.SYSTEM_NAMES.from(c), col * Statics.TILE_SIZE, row * Statics.TILE_SIZE, row, col);
+                Bomberman bomberman = new Bomberman(this, "Bomberman" + c, Bomberman.SYSTEM_NAMES.from(c), col * Constants.TILE_SIZE, row * Constants.TILE_SIZE, row, col);
                 bombermans.add(bomberman);
                 return freeSpace;
             default:
@@ -210,5 +237,9 @@ public class GameBoard extends StackPane {
 
     public boolean isPlaying() {
         return playing;
+    }
+
+    public void setBombermans(List<Bomberman> bombermans) {
+        this.bombermans = bombermans;
     }
 }

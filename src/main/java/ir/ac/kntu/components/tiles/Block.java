@@ -1,6 +1,6 @@
 package ir.ac.kntu.components.tiles;
 
-import ir.ac.kntu.Statics;
+import ir.ac.kntu.Constants;
 import ir.ac.kntu.components.Bomberman;
 import javafx.scene.image.ImageView;
 
@@ -14,7 +14,7 @@ public class Block extends Tile {
         ImageView baseView = createBaseImageView();
         baseView.setFitWidth(getWidth());
         baseView.setFitHeight(getHeight());
-        ImageView fs = new ImageView(Statics.FREE_SPACE_IMAGE);
+        ImageView fs = new ImageView(Constants.FREE_SPACE_IMAGE);
         fs.setFitWidth(getWidth());
         fs.setFitHeight(getHeight());
         fs.setVisible(false);
@@ -23,7 +23,7 @@ public class Block extends Tile {
 
     @Override
     protected ImageView createBaseImageView() {
-        return new ImageView(Statics.BLOCK_IMAGE);
+        return new ImageView(Constants.BLOCK_IMAGE);
     }
 
     @Override

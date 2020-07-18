@@ -1,6 +1,6 @@
 package ir.ac.kntu.components;
 
-import ir.ac.kntu.Statics;
+import ir.ac.kntu.Constants;
 import ir.ac.kntu.Utils;
 import ir.ac.kntu.actions.UserAction;
 import ir.ac.kntu.components.gifts.Gift;
@@ -10,7 +10,6 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.util.Duration;
 
 import java.util.*;
 
@@ -70,28 +69,28 @@ public class Bomberman extends ImageView {
             this.name = name;
             this.userActions = (Arrays.asList(actions));
 
-            downMoving = Utils.loadBomberManView(this, Direction.DOWN, State.MOVING);
-            downStanding = Utils.loadBomberManView(this, Direction.DOWN, State.STANDING);
-            leftMoving = Utils.loadBomberManView(this, Direction.LEFT, State.MOVING);
-            leftStanding = Utils.loadBomberManView(this, Direction.LEFT, State.STANDING);
-            rightMoving = Utils.loadBomberManView(this, Direction.RIGHT, State.MOVING);
-            rightStanding = Utils.loadBomberManView(this, Direction.RIGHT, State.STANDING);
-            upMoving = Utils.loadBomberManView(this, Direction.UP, State.MOVING);
-            upStanding = Utils.loadBomberManView(this, Direction.UP, State.STANDING);
+            downMoving = Utils.loadBomberManImage(this, Direction.DOWN, State.MOVING);
+            downStanding = Utils.loadBomberManImage(this, Direction.DOWN, State.STANDING);
+            leftMoving = Utils.loadBomberManImage(this, Direction.LEFT, State.MOVING);
+            leftStanding = Utils.loadBomberManImage(this, Direction.LEFT, State.STANDING);
+            rightMoving = Utils.loadBomberManImage(this, Direction.RIGHT, State.MOVING);
+            rightStanding = Utils.loadBomberManImage(this, Direction.RIGHT, State.STANDING);
+            upMoving = Utils.loadBomberManImage(this, Direction.UP, State.MOVING);
+            upStanding = Utils.loadBomberManImage(this, Direction.UP, State.STANDING);
         }
 
         public String getName() {
             return name;
         }
 
-        ImageView downMoving;
-        ImageView downStanding;
-        ImageView leftMoving;
-        ImageView leftStanding;
-        ImageView rightMoving;
-        ImageView rightStanding;
-        ImageView upMoving;
-        ImageView upStanding;
+        Image downMoving;
+        Image downStanding;
+        Image leftMoving;
+        Image leftStanding;
+        Image rightMoving;
+        Image rightStanding;
+        Image upMoving;
+        Image upStanding;
         String name;
         List<UserAction> userActions;
 
@@ -119,10 +118,9 @@ public class Bomberman extends ImageView {
 
     private String username;
     private SYSTEM_NAMES systemName;
-    private ImageView currentView;
     private Image currentImage;
     private int speed = 60;
-    private int maxBombs = Statics.BOMBERMAN_MAX_CONCURRENT_BOMBS;
+    private int maxBombs = Constants.BOMBERMAN_MAX_CONCURRENT_BOMBS;
     private List<Bomb> bombs = new ArrayList<>();
     private int row, col;
     private boolean alive = true;
@@ -135,25 +133,11 @@ public class Bomberman extends ImageView {
         this.col = col;
         setTranslateX(x);
         setTranslateY(y);
-        setFitWidth(Statics.BOMBERMAN_WIDTH);
-        setFitHeight(Statics.BOMBERMAN_HEIGHT);
+        setFitWidth(Constants.BOMBERMAN_WIDTH);
+        setFitHeight(Constants.BOMBERMAN_HEIGHT);
 
-        currentImage = systemName.rightStanding.getImage();
+        currentImage = systemName.rightStanding;
         setImage(currentImage);
-        currentView = systemName.rightStanding;
-        currentView.setTranslateX(x);
-        currentView.setTranslateY(y);
-//        getChildren().addAll(currentView);
-
-
-        //Creating Translate Transition
-        translateTransition = new TranslateTransition();
-
-        //Setting the duration of the transition
-        translateTransition.setDuration(Duration.millis(100));
-
-        //Setting the node for the transition
-        translateTransition.setNode(this);
     }
 
     public void moveX(Direction direction) {
@@ -162,14 +146,11 @@ public class Bomberman extends ImageView {
         }
 
         if (direction == Direction.RIGHT) {
-            systemName.rightMoving.setTranslateX(currentView.getTranslateX());
-            systemName.rightMoving.setTranslateY(currentView.getTranslateY());
-            currentView = systemName.rightMoving;
+            currentImage = systemName.rightMoving;
         } else {
-            systemName.leftMoving.setTranslateX(currentView.getTranslateX());
-            systemName.leftMoving.setTranslateY(currentView.getTranslateY());
-            currentView = systemName.leftMoving;
+            currentImage = systemName.leftMoving;
         }
+        setImage(currentImage);
 
         double newX = checkMovement(direction);
         if (newX < 0) {
@@ -178,7 +159,26 @@ public class Bomberman extends ImageView {
         setTranslateX(newX);
         addCol(direction);
         checkStatus();
+        correctImage(direction);
         System.out.println("x " + getTranslateX() + " y " + getTranslateY());
+    }
+
+    private void correctImage(Direction direction) {
+        switch (direction) {
+            case UP:
+                currentImage = systemName.upStanding;
+                break;
+            case DOWN:
+                currentImage = systemName.downStanding;
+                break;
+            case LEFT:
+                currentImage = systemName.leftStanding;
+                break;
+            case RIGHT:
+                currentImage = systemName.rightStanding;
+                break;
+        }
+        setImage(currentImage);
     }
 
     public void moveY(Direction direction) {
@@ -187,14 +187,11 @@ public class Bomberman extends ImageView {
             return;
         }
         if (direction == Direction.UP) {
-            systemName.upMoving.setTranslateX(currentView.getTranslateX());
-            systemName.upMoving.setTranslateY(currentView.getTranslateY());
-            currentView = systemName.upMoving;
+            currentImage = systemName.upMoving;
         } else {
-            systemName.downMoving.setTranslateX(currentView.getTranslateX());
-            systemName.downMoving.setTranslateY(currentView.getTranslateY());
-            currentView = systemName.downMoving;
+            currentImage = systemName.downMoving;
         }
+        setImage(currentImage);
 
         double newY = checkMovement(direction);
         if (newY < 0) {
@@ -203,8 +200,8 @@ public class Bomberman extends ImageView {
         setTranslateY(newY);
         addRow(direction);
         checkStatus();
+        correctImage(direction);
         System.out.println("x " + getTranslateX() + " y " + getTranslateY());
-
     }
 
     private boolean checkAlivenessAndGame() {
@@ -284,8 +281,8 @@ public class Bomberman extends ImageView {
             System.out.println(String.format("max bombs %s, current bombs %s", maxBombs, bombs.size()));
             return;
         }
-        Bomb bomb = new Bomb(board, this, getTranslateX(), getTranslateY(), row, col, Statics.BOMB_DELAY,
-                bombBoosted ? Statics.BOMB_BOOSTED_EXPLOSION_RANGE : Statics.BOMB_EXPLOSION_RANGE);
+        Bomb bomb = new Bomb(board, this, getTranslateX(), getTranslateY(), row, col, Constants.BOMB_DELAY,
+                bombBoosted ? Constants.BOMB_BOOSTED_EXPLOSION_RANGE : Constants.BOMB_EXPLOSION_RANGE);
         bombs.add(bomb);
         board.getChildren().add(bomb);
         startBomb(bomb);
@@ -329,10 +326,6 @@ public class Bomberman extends ImageView {
 
     public SYSTEM_NAMES getSystemName() {
         return systemName;
-    }
-
-    public ImageView getCurrentView() {
-        return currentView;
     }
 
     public int getSpeed() {

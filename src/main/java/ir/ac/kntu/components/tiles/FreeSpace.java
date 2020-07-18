@@ -1,6 +1,6 @@
 package ir.ac.kntu.components.tiles;
 
-import ir.ac.kntu.Statics;
+import ir.ac.kntu.Constants;
 import ir.ac.kntu.components.Bomberman;
 import javafx.scene.image.ImageView;
 
@@ -13,7 +13,7 @@ public class FreeSpace extends Tile {
 
     @Override
     protected ImageView createBaseImageView() {
-        ImageView imageView = new ImageView(Statics.FREE_SPACE_IMAGE);
+        ImageView imageView = new ImageView(Constants.FREE_SPACE_IMAGE);
 //        imageView.setTranslateX(x);
 //        imageView.setTranslateY(y);
         return imageView;

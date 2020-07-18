@@ -1,6 +1,6 @@
 package ir.ac.kntu.components.tiles;
 
-import ir.ac.kntu.Statics;
+import ir.ac.kntu.Constants;
 import ir.ac.kntu.components.Bomberman;
 import javafx.scene.image.ImageView;
 
@@ -12,7 +12,7 @@ public class Wall extends Tile {
 
     @Override
     protected ImageView createBaseImageView() {
-        return new ImageView(Statics.WALL_IMAGE);
+        return new ImageView(Constants.WALL_IMAGE);
     }
 
     @Override
