@@ -20,12 +20,29 @@ public class Bomberman extends ImageView {
     private TranslateTransition translateTransition;
 
     public enum Direction {
-        UP(-1), DOWN(1), LEFT(-1), RIGHT(1);
+        UP(-1, 'u'), DOWN(1, 'd'), LEFT(-1, 'l'), RIGHT(1, 'r');
 
         private final int value;
+        private final int abbr;
 
-        Direction(int value) {
+        Direction(int value, char abbr) {
             this.value = value;
+            this.abbr = abbr;
+        }
+
+        public static Direction fromAbbr(char c) {
+            switch (c) {
+                case 'u':
+                    return UP;
+                case 'd':
+                    return DOWN;
+                case 'l':
+                    return LEFT;
+                case 'r':
+                    return RIGHT;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + c);
+            }
         }
     }
 
@@ -88,6 +105,7 @@ public class Bomberman extends ImageView {
     private int maxBombs = Statics.BOMBERMAN_MAX_CONCURRENT_BOMBS;
     private List<Bomb> bombs = new ArrayList<>();
     private int row, col;
+    private boolean alive = true;
 
     public Bomberman(GameBoard board, String username, SYSTEM_NAMES systemName, int x, int y, int row, int col) {
         this.board = board;
@@ -119,7 +137,10 @@ public class Bomberman extends ImageView {
     }
 
     public void moveX(Direction direction) {
-
+        if (!alive) {
+            System.out.println("I'm dead " + systemName);
+            return;
+        }
 
         if (direction == Direction.RIGHT) {
             systemName.rightMoving.setTranslateX(currentView.getTranslateX());
@@ -143,7 +164,6 @@ public class Bomberman extends ImageView {
 
     public void moveY(Direction direction) {
 
-        checkMovement(direction);
         if (direction == Direction.UP) {
             systemName.upMoving.setTranslateX(currentView.getTranslateX());
             systemName.upMoving.setTranslateY(currentView.getTranslateY());
@@ -214,7 +234,7 @@ public class Bomberman extends ImageView {
             System.out.println(String.format("max bombs %s, current bombs %s", maxBombs, bombs.size()));
             return;
         }
-        Bomb bomb = new Bomb(board, getTranslateX(), getTranslateY(), Statics.BOMB_DELAY, Statics.BOMB_EXPLOSION_RANGE);
+        Bomb bomb = new Bomb(board, getTranslateX(), getTranslateY(), row, col, Statics.BOMB_DELAY, Statics.BOMB_EXPLOSION_RANGE);
         bombs.add(bomb);
         board.getChildren().add(bomb);
         startBomb(this, bomb);
@@ -227,6 +247,7 @@ public class Bomberman extends ImageView {
                 Platform.runLater(() -> {
                     board.getChildren().remove(bomb);
                     bomberman.getBombs().remove(bomb);
+                    bomb.explode();
                 });
             }
         };
@@ -240,6 +261,12 @@ public class Bomberman extends ImageView {
 
     public void addCol(Direction direction) {
         col += direction.value;
+    }
+
+    public void killMe() {
+        alive = false;
+        board.getChildren().remove(this);
+//        board.getBombermans().remove(this);
     }
 
     public String getUsername() {
@@ -272,5 +299,17 @@ public class Bomberman extends ImageView {
 
     public List<Bomb> getBombs() {
         return bombs;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public boolean isAlive() {
+        return alive;
     }
 }

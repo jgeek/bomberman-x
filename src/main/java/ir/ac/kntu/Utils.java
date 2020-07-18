@@ -23,4 +23,8 @@ public class Utils {
         return imageView;
     }
 
+    public static ImageView loadOneWayView(Bomberman.Direction direction) {
+        String fileName = String.format("assets/map/oneway/oneway_%s.png", direction.toString().toLowerCase());
+        return new ImageView(loadImage(fileName));
+    }
 }

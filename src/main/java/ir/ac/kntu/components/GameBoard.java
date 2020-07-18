@@ -1,10 +1,7 @@
 package ir.ac.kntu.components;
 
 import ir.ac.kntu.Statics;
-import ir.ac.kntu.components.tiles.Block;
-import ir.ac.kntu.components.tiles.FreeSpace;
-import ir.ac.kntu.components.tiles.Tile;
-import ir.ac.kntu.components.tiles.Wall;
+import ir.ac.kntu.components.tiles.*;
 import javafx.scene.layout.StackPane;
 
 import java.util.ArrayList;
@@ -37,6 +34,7 @@ public class GameBoard extends StackPane {
         for (int row = 0; row < data.length; row++) {
             for (int col = 0; col < data[row].length; col++) {
                 Tile tile = createTile(row, col, data[row][col]);
+                tile.init();
                 tiles.add(tile);
                 getChildren().add(tile);
             }
@@ -45,20 +43,30 @@ public class GameBoard extends StackPane {
     }
 
     private Tile createTile(int row, int col, char c) {
-        Bomberman bomberman = null;
+        Tile freeSpace = new FreeSpace(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
         switch (c) {
             case 'w':
                 return new Wall(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
             case 'b':
-                return new Block(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
+                Tile block = new Block(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
+//                block.getChildren().add(freeSpace);
+                return block;
             case 'f':
                 return new FreeSpace(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
-            default:
-                Tile tile = new FreeSpace(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE);
-                bomberman = new Bomberman(this, "asghar", Bomberman.SYSTEM_NAMES.from(c), col * Statics.TILE_SIZE, row * Statics.TILE_SIZE, row, col);
-//                tile.getChildren().add(bomberman);
+            case 'u':
+            case 'd':
+            case 'l':
+            case 'r':
+                return new OneWay(row, col, Statics.TILE_SIZE, Statics.TILE_SIZE, col * Statics.TILE_SIZE, row * Statics.TILE_SIZE, c);
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+                Bomberman bomberman = new Bomberman(this, "Bomberman" + c, Bomberman.SYSTEM_NAMES.from(c), col * Statics.TILE_SIZE, row * Statics.TILE_SIZE, row, col);
                 bombermans.add(bomberman);
-                return tile;
+                return freeSpace;
+            default:
+                throw new IllegalStateException("Unexpected board code: " + c);
         }
     }
 

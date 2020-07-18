@@ -6,16 +6,13 @@ import javafx.scene.image.ImageView;
 
 public class Wall extends Tile {
 
-    public Wall(int row, int col, int width, int height, int x, int y) {
+    public Wall(int row, int col, double width, double height, double x, double y) {
         super(row, col, width, height, x, y);
     }
 
     @Override
-    protected ImageView createBaseImageView(int x, int y) {
-        ImageView imageView = new ImageView(Statics.WALL_IMAGE);
-//        imageView.setTranslateX(x);
-//        imageView.setTranslateY(y);
-        return imageView;
+    protected ImageView createBaseImageView() {
+        return new ImageView(Statics.WALL_IMAGE);
     }
 
     @Override

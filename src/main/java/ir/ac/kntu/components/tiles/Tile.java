@@ -6,24 +6,37 @@ import javafx.scene.layout.StackPane;
 
 public abstract class Tile extends StackPane {
 
-    private ImageView baseView;
-    //    private int width, height;
-    private int row, col;
+    protected ImageView baseView;
+    protected double width, height;
+    protected int row, col;
+    protected boolean canPassThrow;
 
-    public Tile(int row, int col, int width, int height, int x, int y) {
+    public Tile(int row, int col, double width, double height, double x, double y) {
         this.row = row;
         this.col = col;
-//        this.width = width;
-//        this.height = height;
-        baseView = createBaseImageView(x, y);
-        baseView.setFitWidth(width);
-        baseView.setFitHeight(height);
-        getChildren().add(baseView);
+        setWidth(width);
+        setHeight(height);
+        this.width = width;
+        this.height = height;
         setTranslateX(x);
         setTranslateY(y);
     }
 
-    protected abstract ImageView createBaseImageView(int x, int y);
+    public Tile() {
+    }
+
+    public void init() {
+        baseView = createBaseImageView();
+        baseView.setFitWidth(width);
+        baseView.setFitHeight(height);
+        getChildren().add(baseView);
+    }
+
+    public boolean canExplode() {
+        return false;
+    }
+
+    protected abstract ImageView createBaseImageView();
 
     public int getRow() {
         return row;
@@ -34,4 +47,8 @@ public abstract class Tile extends StackPane {
     }
 
     public abstract boolean canPassThrow(Bomberman.Direction direction);
+
+    public void setCanPassThrow(boolean canPassThrow) {
+        this.canPassThrow = canPassThrow;
+    }
 }
