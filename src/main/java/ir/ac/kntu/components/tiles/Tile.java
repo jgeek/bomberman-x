@@ -11,6 +11,7 @@ public abstract class Tile extends StackPane {
     protected int row, col;
     protected boolean canPassThrow;
     private boolean inFire;
+    private Tile addedOn;
 
     public Tile(int row, int col, double width, double height, double x, double y) {
         this.row = row;
@@ -63,5 +64,13 @@ public abstract class Tile extends StackPane {
 
     public void setInFire(boolean inFire) {
         this.inFire = inFire;
+    }
+
+    public Tile getAddedOn() {
+        return addedOn;
+    }
+
+    public void setAddedOn(Tile addedOn) {
+        this.addedOn = addedOn;
     }
 }

@@ -185,6 +185,10 @@ public class Bomberman extends ImageView {
 
     public void moveY(Direction direction) {
 
+        if (!alive) {
+            System.out.println("I'm dead " + systemName);
+            return;
+        }
         if (direction == Direction.UP) {
             systemName.upMoving.setTranslateX(currentView.getTranslateX());
             systemName.upMoving.setTranslateY(currentView.getTranslateY());
@@ -254,7 +258,12 @@ public class Bomberman extends ImageView {
 
         for (Tile tile : board.getTiles()) {
             if (tile.getRow() == nextRow && tile.getCol() == nextCol) {
-                return tile.canPassThrow(direction) ? newValue : -1;
+                Tile addedOn = tile.getAddedOn();
+                if (addedOn != null) {
+                    return addedOn.canPassThrow(direction) ? newValue : -1;
+                } else {
+                    return tile.canPassThrow(direction) ? newValue : -1;
+                }
             }
         }
         throw new IllegalStateException(String.format("No tile found in row %s, col %s", nextRow, nextCol));
@@ -298,7 +307,7 @@ public class Bomberman extends ImageView {
 
     public void killMe() {
         alive = false;
-        board.getChildren().remove(this);
+        board.removeBomberMan(this);
     }
 
     public void consumeGift(Gift gift) {

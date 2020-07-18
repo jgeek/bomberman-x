@@ -7,6 +7,7 @@ import ir.ac.kntu.components.gifts.Gift;
 import ir.ac.kntu.components.tiles.*;
 import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
 import java.util.*;
@@ -60,6 +61,7 @@ public class GameBoard extends StackPane {
                 Platform.runLater(() -> {
                     Tile tile = findRandomFreeTile();
                     int index = new Random().nextInt(2);
+                    index = 2;
                     switch (index) {
                         case 0:
                             Gift gift = new BombBooster(GameBoard.this);
@@ -77,7 +79,13 @@ public class GameBoard extends StackPane {
                             char[] signs = {'u', 'd', 'l', 'r'};
                             char c = signs[new Random().nextInt(signs.length)];
                             Tile oneWay = new OneWay(tile.getRow(), tile.getCol(), Statics.TILE_SIZE, Statics.TILE_SIZE,
-                                    tile.getCol() * Statics.TILE_SIZE, tile.getRow() * Statics.TILE_SIZE, 's');
+                                    tile.getCol() * Statics.TILE_SIZE, tile.getRow() * Statics.TILE_SIZE, c);
+                            oneWay.init();
+                            tile.setAddedOn(oneWay);
+                            getChildren().add(oneWay);
+//                            tile.setVisible(false);
+//                            tiles.add(oneWay);
+
 
                     }
 
@@ -133,6 +141,11 @@ public class GameBoard extends StackPane {
 
     public void removeItem(Node node) {
         getChildren().remove(node);
+    }
+
+    public void removeBomberMan(Bomberman bomberman) {
+        bombermans.remove(bomberman);
+        getChildren().remove(bomberman);
     }
 
     public List<Bomberman> getBombermans() {
