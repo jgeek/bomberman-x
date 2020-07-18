@@ -13,6 +13,7 @@ public class Statics {
     public static final int BOMB_DELAY = 3000;
     public static final int BOMB_EXPLOSION_RANGE = 2;
     public static final int BOMB_BOOSTED_EXPLOSION_RANGE = 5;
+    public static final int GAME_TIME = 3 * 60 * 1000;
     public static int EXPLOSION_REMAIN_TIME = 600;
     public static final int BOMB_BOOST_TIME = 15000;
     public static final int BOMB_BOOST_INTERVAL = 15000;

@@ -12,10 +12,12 @@ import java.util.Map;
 
 public class InputEventHandler implements EventHandler<KeyEvent> {
 
+    private final GameBoard board;
     Map<KeyCode, Bomberman> dispatcher = new HashMap<>();
     private final Map<KeyCode, Bomberman.Direction> keyMapper = new HashMap<>();
 
     public InputEventHandler(GameBoard board) {
+        this.board = board;
         for (Bomberman bomberman : board.getBombermans()) {
             bomberman.getSystemName().getUserActions().forEach(userAction -> {
                 dispatcher.put(userAction.keyCode, bomberman);
@@ -30,7 +32,11 @@ public class InputEventHandler implements EventHandler<KeyEvent> {
     public void handle(KeyEvent event) {
         Bomberman bomberman = dispatcher.get(event.getCode());
         if (bomberman == null) {
+            System.out.println(String.format("key %s is not defined", event.getCode()));
             return;
+        }
+        if (!board.isPlaying()) {
+            System.out.printf("Game is over");
         }
         Bomberman.Direction direction = keyMapper.get(event.getCode());
         if (direction == null) {

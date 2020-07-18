@@ -7,7 +7,6 @@ import ir.ac.kntu.components.gifts.Gift;
 import ir.ac.kntu.components.tiles.*;
 import javafx.application.Platform;
 import javafx.scene.Node;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
 import java.util.*;
@@ -16,18 +15,19 @@ import java.util.stream.Collectors;
 public class GameBoard extends StackPane {
 
     private Bomberman systemBomber;
-
-
     private String name;
     private int rows;
     private int cols;
     private char[][] data;
     private List<Tile> tiles = new ArrayList<>();
     private List<Bomberman> bombermans = new ArrayList<>();
-    private int minX, minY = 0;
+    private int minX, minY;
     private int maxX, maxY;
-    List<Timer> timers = new ArrayList<>();
-    List<Gift> gifts = new ArrayList<>();
+    private List<Timer> timers = new ArrayList<>();
+    private List<Gift> gifts = new ArrayList<>();
+    private Timer gameTimer;
+    private boolean playing;
+
 
     public GameBoard(String name, char[][] data) {
         this.name = name;
@@ -50,6 +50,10 @@ public class GameBoard extends StackPane {
         systemBomber.setMaxBombs(1000);
         systemBomber.setRow(-1);
         systemBomber.setCol(-1);
+    }
+
+    public void startGame() {
+        playing = true;
         startTimers();
     }
 
@@ -81,12 +85,9 @@ public class GameBoard extends StackPane {
                             Tile oneWay = new OneWay(tile.getRow(), tile.getCol(), Statics.TILE_SIZE, Statics.TILE_SIZE,
                                     tile.getCol() * Statics.TILE_SIZE, tile.getRow() * Statics.TILE_SIZE, c);
                             oneWay.init();
-                            tile.setAddedOn(oneWay);
+                            tile.setGuestTile(oneWay);
                             getChildren().add(oneWay);
-//                            tile.setVisible(false);
-//                            tiles.add(oneWay);
-
-
+                            disappearAfterAwhile(oneWay);
                     }
 
                 });
@@ -94,6 +95,26 @@ public class GameBoard extends StackPane {
         };
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(task, 0, Statics.BOMB_BOOST_INTERVAL);
+        timers.add(timer);
+
+        gameTimer = Utils.runLater(() -> {
+            timers.forEach(Timer::cancel);
+            playing = false;
+            System.out.println("Game is over");
+        }, 5000);
+
+    }
+
+    public void stopGame() {
+        timers.forEach(Timer::cancel);
+    }
+
+    private void disappearAfterAwhile(Tile tile) {
+        Timer timer = Utils.runLater(() -> {
+            getChildren().remove(tile);
+            tile.getHostTile().setGuestTile(null);
+        }, Statics.BOMB_BOOST_INTERVAL);
+        timers.add(timer);
 
     }
 
@@ -174,5 +195,9 @@ public class GameBoard extends StackPane {
 
     public List<Gift> getGifts() {
         return gifts;
+    }
+
+    public boolean isPlaying() {
+        return playing;
     }
 }

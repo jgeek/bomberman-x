@@ -4,6 +4,7 @@ import ir.ac.kntu.Statics;
 import ir.ac.kntu.Utils;
 import ir.ac.kntu.components.tiles.Block;
 import ir.ac.kntu.components.tiles.FreeSpace;
+import ir.ac.kntu.components.tiles.OneWay;
 import ir.ac.kntu.components.tiles.Tile;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -44,6 +45,7 @@ public class Bomb extends ImageView implements Positionable {
         toExplodeTiles.addAll(getToExplodeRowTiles(-1));
         toExplodeTiles.addAll(getToExplodeColTiles(1));
         toExplodeTiles.addAll(getToExplodeColTiles(-1));
+
 
         Utils.runLater(() -> {
             for (Tile tile : toExplodeTiles) {
@@ -108,6 +110,9 @@ public class Bomb extends ImageView implements Positionable {
     private Tile getToExplodeTile(int i, int j) {
         for (Tile tile : board.getTiles()) {
             if (tile.getRow() == i && tile.getCol() == j) {
+                if (tile instanceof OneWay) {
+                    return tile;
+                }
                 return tile.isExplodable() ? tile : null;
             }
         }
@@ -119,8 +124,8 @@ public class Bomb extends ImageView implements Positionable {
         for (int i = 1; i <= explosionRange; i += Math.abs(step)) {
             Tile tile = getToExplodeTile(row, col + (i * step));
             if (tile != null) {
-                if (tile instanceof FreeSpace) {
-//                    continue;
+                if (tile instanceof OneWay) {
+                    continue;
                 }
                 tiles.add(tile);
             } else {
@@ -135,8 +140,8 @@ public class Bomb extends ImageView implements Positionable {
         for (int i = 1; i <= explosionRange; i += Math.abs(step)) {
             Tile tile = getToExplodeTile(row + (i * step), col);
             if (tile != null) {
-                if (tile instanceof FreeSpace) {
-//                    continue;
+                if (tile instanceof OneWay) {
+                    continue;
                 }
                 tiles.add(tile);
             } else {

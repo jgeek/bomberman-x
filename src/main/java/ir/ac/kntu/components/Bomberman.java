@@ -13,7 +13,6 @@ import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 
 public class Bomberman extends ImageView {
@@ -158,8 +157,7 @@ public class Bomberman extends ImageView {
     }
 
     public void moveX(Direction direction) {
-        if (!alive) {
-            System.out.println("I'm dead " + systemName);
+        if (!checkAlivenessAndGame()) {
             return;
         }
 
@@ -185,8 +183,7 @@ public class Bomberman extends ImageView {
 
     public void moveY(Direction direction) {
 
-        if (!alive) {
-            System.out.println("I'm dead " + systemName);
+        if (!checkAlivenessAndGame()) {
             return;
         }
         if (direction == Direction.UP) {
@@ -208,6 +205,18 @@ public class Bomberman extends ImageView {
         checkStatus();
         System.out.println("x " + getTranslateX() + " y " + getTranslateY());
 
+    }
+
+    private boolean checkAlivenessAndGame() {
+        if (!alive) {
+            System.out.println("I'm dead " + systemName);
+            return false;
+        }
+        if (!board.isPlaying()) {
+            System.out.println("Game is over");
+            return false;
+        }
+        return true;
     }
 
     private void checkStatus() {
@@ -258,9 +267,9 @@ public class Bomberman extends ImageView {
 
         for (Tile tile : board.getTiles()) {
             if (tile.getRow() == nextRow && tile.getCol() == nextCol) {
-                Tile addedOn = tile.getAddedOn();
-                if (addedOn != null) {
-                    return addedOn.canPassThrow(direction) ? newValue : -1;
+                Tile guestTile = tile.getGuestTile();
+                if (guestTile != null) {
+                    return guestTile.canPassThrow(direction) ? newValue : -1;
                 } else {
                     return tile.canPassThrow(direction) ? newValue : -1;
                 }

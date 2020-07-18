@@ -33,5 +33,7 @@ public class Starter extends Application {
         stage.setAlwaysOnTop(true);
         stage.show();
 
+        board.startGame();
+
     }
 }

@@ -11,7 +11,8 @@ public abstract class Tile extends StackPane {
     protected int row, col;
     protected boolean canPassThrow;
     private boolean inFire;
-    private Tile addedOn;
+    private Tile guestTile;
+    private Tile hostTile;
 
     public Tile(int row, int col, double width, double height, double x, double y) {
         this.row = row;
@@ -66,11 +67,22 @@ public abstract class Tile extends StackPane {
         this.inFire = inFire;
     }
 
-    public Tile getAddedOn() {
-        return addedOn;
+    public Tile getGuestTile() {
+        return guestTile;
     }
 
-    public void setAddedOn(Tile addedOn) {
-        this.addedOn = addedOn;
+    public void setGuestTile(Tile guestTile) {
+        this.guestTile = guestTile;
+        if (guestTile != null) {
+            guestTile.setHostTile(this);
+        }
+    }
+
+    public Tile getHostTile() {
+        return hostTile;
+    }
+
+    public void setHostTile(Tile hostTile) {
+        this.hostTile = hostTile;
     }
 }
