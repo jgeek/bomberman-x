@@ -13,7 +13,8 @@ public class Constants {
     public static final int BOMB_DELAY = 3000;
     public static final int BOMB_EXPLOSION_RANGE = 2;
     public static final int BOMB_BOOSTED_EXPLOSION_RANGE = 5;
-    public static final int GAME_TIME = 3 * 60 * 1000;
+//    public static final int GAME_TIME = 5000;
+        public static final int GAME_TIME = 3 * 60 * 1000;
     public static final double MAIN_PANEL_WIDTH = 1000;
     public static final double MAIN_PANEL_HEIGHT = 800;
     public static final double MENU_ITEM_WIDTH = 400;

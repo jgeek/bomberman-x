@@ -83,6 +83,10 @@ public class Bomb extends ImageView implements Positionable {
                 }
                 killed.forEach(bomberman -> {
                     bomberman.killMe();
+                    if (!this.bomberman.getSystemName().equals(Bomberman.SYSTEM_NAMES.SYSTEM) && !this.bomberman.getSystemName().equals(bomberman.getSystemName())) {
+                        this.bomberman.updateScore(1);
+                        this.bomberman.updateScore(bomberman.getScore());
+                    }
                     System.out.println(String.format("bomberman %s is killed by %s", bomberman.getSystemName(), this.bomberman.getSystemName()));
                 });
             }

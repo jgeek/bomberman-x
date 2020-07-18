@@ -1,6 +1,7 @@
-package ir.ac.kntu.components;
+package ir.ac.kntu.actions;
 
 import ir.ac.kntu.actions.UserAction;
+import ir.ac.kntu.components.Bomberman;
 import javafx.scene.input.KeyCode;
 
 public class KeyDirection extends UserAction {

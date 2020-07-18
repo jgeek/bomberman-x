@@ -61,8 +61,8 @@ public class Starter extends Application {
             stage.setTitle("Bomberman");
             stage.setScene(scene);
             stage.setAlwaysOnTop(true);
-            stage.setWidth(Constants.MAIN_PANEL_WIDTH);
-            stage.setHeight(Constants.MAIN_PANEL_HEIGHT);
+//            stage.setWidth(Constants.MAIN_PANEL_WIDTH);
+//            stage.setHeight(Constants.MAIN_PANEL_HEIGHT);
             stage.show();
 
             stage.setOnCloseRequest(new EventHandler<WindowEvent>() {

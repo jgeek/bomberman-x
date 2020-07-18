@@ -2,7 +2,7 @@ package ir.ac.kntu;
 
 import ir.ac.kntu.components.Bomberman;
 import ir.ac.kntu.components.GameBoard;
-import ir.ac.kntu.components.KeyDirection;
+import ir.ac.kntu.actions.KeyDirection;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.event.EventHandler;
@@ -37,6 +37,11 @@ public class InputEventHandler implements EventHandler<KeyEvent> {
         }
         if (!board.isPlaying()) {
             System.out.printf("Game is over");
+            return;
+        }
+        if (!bomberman.isAlive()) {
+            System.out.println(String.format("Hey %s!Sorry, your're dead", bomberman.getSystemName()));
+            return;
         }
         Bomberman.Direction direction = keyMapper.get(event.getCode());
         if (direction == null) {

@@ -38,6 +38,7 @@ public class MainPanel extends Pane {
             board = Constants.getDefaultBoard();
 //            board.setPrefSize(Constants.MAIN_PANEL_WIDTH, Constants.MAIN_PANEL_HEIGHT);
             board.load();
+            board.setScene(scene);
             scene.setRoot(board);
             scene.setOnKeyPressed(new InputEventHandler(board));
 

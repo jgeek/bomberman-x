@@ -1,4 +1,4 @@
-package ir.ac.kntu.components;
+package ir.ac.kntu.actions;
 
 import ir.ac.kntu.actions.UserAction;
 import javafx.scene.input.KeyCode;

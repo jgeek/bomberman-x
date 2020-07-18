@@ -8,6 +8,7 @@ import ir.ac.kntu.components.gifts.Gift;
 import ir.ac.kntu.components.tiles.*;
 import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -35,6 +36,7 @@ public class GameBoard extends Pane {
     private Timer gameTimer;
     private boolean playing;
     private VBox statusBar;
+    private Scene scene;
 
 
     public GameBoard(String name, char[][] data) {
@@ -68,8 +70,9 @@ public class GameBoard extends Pane {
         statusBar.setTranslateX(maxX + Constants.TILE_SIZE);
         statusBar.setTranslateY(0);
         statusBar.setPrefSize(200, maxY);
-        statusBar.getChildren().add(new Circle(10));
+        bombermans.forEach(b -> statusBar.getChildren().add(new PlayerBoardSection(b)));
         getChildren().add(statusBar);
+        setFocused(true);
 
         systemBomber = new Bomberman(this, "system", Bomberman.SYSTEM_NAMES.SYSTEM, 0, 0, 0, 0);
         systemBomber.setMaxBombs(1000);
@@ -131,15 +134,19 @@ public class GameBoard extends Pane {
         timers.add(timer);
 
         gameTimer = Utils.runLater(() -> {
-            timers.forEach(Timer::cancel);
-            playing = false;
-            System.out.println("Game is over");
+            stopGame();
+
         }, Constants.GAME_TIME);
 
     }
 
     public void stopGame() {
         timers.forEach(Timer::cancel);
+        playing = false;
+        System.out.println("Game is over");
+
+        GameOverPanel panel = new GameOverPanel(bombermans);
+        scene.setRoot(panel);
     }
 
     private void disappearAfterAwhile(Tile tile) {
@@ -205,6 +212,9 @@ public class GameBoard extends Pane {
     public void removeBomberMan(Bomberman bomberman) {
         bombermans.remove(bomberman);
         getChildren().remove(bomberman);
+        if (bombermans.size() <= 1) {
+            stopGame();
+        }
     }
 
     public List<Bomberman> getBombermans() {
@@ -241,5 +251,9 @@ public class GameBoard extends Pane {
 
     public void setBombermans(List<Bomberman> bombermans) {
         this.bombermans = bombermans;
+    }
+
+    public void setScene(Scene scene) {
+        this.scene = scene;
     }
 }

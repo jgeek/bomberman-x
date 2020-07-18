@@ -2,6 +2,8 @@ package ir.ac.kntu.components;
 
 import ir.ac.kntu.Constants;
 import ir.ac.kntu.Utils;
+import ir.ac.kntu.actions.InsertBomb;
+import ir.ac.kntu.actions.KeyDirection;
 import ir.ac.kntu.actions.UserAction;
 import ir.ac.kntu.components.gifts.Gift;
 import ir.ac.kntu.components.tiles.Tile;
@@ -19,6 +21,12 @@ public class Bomberman extends ImageView {
     private final GameBoard board;
     private TranslateTransition translateTransition;
     private boolean bombBoosted;
+    private PlayerBoardSection scoreBoard;
+    private int score;
+
+    public void setScoreBoard(PlayerBoardSection scoreBoard) {
+        this.scoreBoard = scoreBoard;
+    }
 
     public enum Direction {
         UP(-1, 'u'), DOWN(1, 'd'), LEFT(-1, 'l'), RIGHT(1, 'r');
@@ -136,7 +144,7 @@ public class Bomberman extends ImageView {
         setFitWidth(Constants.BOMBERMAN_WIDTH);
         setFitHeight(Constants.BOMBERMAN_HEIGHT);
 
-        currentImage = systemName.rightStanding;
+        currentImage = systemName.downStanding;
         setImage(currentImage);
     }
 
@@ -316,8 +324,9 @@ public class Bomberman extends ImageView {
         board.removeBomberMan(this);
     }
 
-    public void consumeGift(Gift gift) {
-
+    public void updateScore(int score) {
+        this.score += score;
+        scoreBoard.setScore(this.score);
     }
 
     public String getUsername() {
@@ -370,5 +379,17 @@ public class Bomberman extends ImageView {
 
     public void setBombBoosted(boolean bombBoosted) {
         this.bombBoosted = bombBoosted;
+    }
+
+    public Image getCurrentImage() {
+        return currentImage;
+    }
+
+    public PlayerBoardSection getScoreBoard() {
+        return scoreBoard;
+    }
+
+    public int getScore() {
+        return score;
     }
 }
