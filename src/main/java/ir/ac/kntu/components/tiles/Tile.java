@@ -32,7 +32,7 @@ public abstract class Tile extends StackPane {
         getChildren().add(baseView);
     }
 
-    public boolean canExplode() {
+    public boolean isExplodable() {
         return false;
     }
 
@@ -50,5 +50,9 @@ public abstract class Tile extends StackPane {
 
     public void setCanPassThrow(boolean canPassThrow) {
         this.canPassThrow = canPassThrow;
+    }
+
+    public boolean isCanPassThrow() {
+        return canPassThrow;
     }
 }

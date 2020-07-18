@@ -2,7 +2,6 @@ package ir.ac.kntu.components.tiles;
 
 import ir.ac.kntu.Statics;
 import ir.ac.kntu.components.Bomberman;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class Block extends Tile {
@@ -19,7 +18,7 @@ public class Block extends Tile {
         fs.setFitWidth(getWidth());
         fs.setFitHeight(getHeight());
         fs.setVisible(false);
-        getChildren().addAll(baseView,fs);
+        getChildren().addAll(baseView, fs);
     }
 
     @Override
@@ -33,7 +32,7 @@ public class Block extends Tile {
     }
 
     @Override
-    public boolean canExplode() {
+    public boolean isExplodable() {
         return true;
     }
 }

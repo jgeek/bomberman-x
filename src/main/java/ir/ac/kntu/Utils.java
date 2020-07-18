@@ -1,10 +1,13 @@
 package ir.ac.kntu;
 
 import ir.ac.kntu.components.Bomberman;
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Utils {
 
@@ -26,5 +29,19 @@ public class Utils {
     public static ImageView loadOneWayView(Bomberman.Direction direction) {
         String fileName = String.format("assets/map/oneway/oneway_%s.png", direction.toString().toLowerCase());
         return new ImageView(loadImage(fileName));
+    }
+
+    public static void runLater(Runnable runnable, int delay) {
+        TimerTask task = new TimerTask() {
+
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    runnable.run();
+                });
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(task, delay);
     }
 }

@@ -1,33 +1,34 @@
 package ir.ac.kntu.components;
 
 import ir.ac.kntu.Statics;
+import ir.ac.kntu.Utils;
 import ir.ac.kntu.components.tiles.Block;
 import ir.ac.kntu.components.tiles.FreeSpace;
 import ir.ac.kntu.components.tiles.Tile;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Circle;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Bomb extends ImageView {
 
+    private Bomberman bomberman;
     private int row;
     private int col;
     private Image image;
     private int delay;
     private int explosionRange;
+    private boolean exploded;
     private GameBoard board;
 
-    public Bomb(GameBoard board, double x, double y, int row, int col, int delay, int explosionRange) {
+    public Bomb(GameBoard board, Bomberman bomberman, double x, double y, int row, int col, int delay, int explosionRange) {
         this.delay = delay;
         this.explosionRange = explosionRange;
         this.row = row;
         this.col = col;
         this.board = board;
+        this.bomberman = bomberman;
         setImage(Statics.BOMB_IMAGE);
         setFitWidth(Statics.BOMB_SIZE);
         setFitHeight(Statics.BOMB_SIZE);
@@ -37,7 +38,6 @@ public class Bomb extends ImageView {
     }
 
     public void explode() {
-        List<Integer[]> indices = new ArrayList<>();
         List<Tile> toExplodeTiles = new ArrayList<>();
         toExplodeTiles.add(getToExplodeTile(row, col));
         toExplodeTiles.addAll(getToExplodeRowTiles(1));
@@ -45,46 +45,68 @@ public class Bomb extends ImageView {
         toExplodeTiles.addAll(getToExplodeColTiles(1));
         toExplodeTiles.addAll(getToExplodeColTiles(-1));
 
+        Utils.runLater(() -> {
+            for (Tile tile : toExplodeTiles) {
+                if (tile instanceof Block) {
+                    if (!tile.isCanPassThrow()) {
+                        // hide block main layer
+                        tile.getChildren().get(0).setVisible(false);
 
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-
-                    for (Tile tile : toExplodeTiles) {
-                        if (tile instanceof Block) {
-                            tile.getChildren().get(0).setVisible(false);
-                            tile.getChildren().get(1).setVisible(true);
-                            tile.setCanPassThrow(true);
-                        }
-//                        board.getChildren().remove(tile);
-//                        tile.setVisible(false);
-//                        board.getTiles().remove(tile);
-//                        Tile freeSpace = FreeSpace.fromTile(tile);
-//                        board.getChildren().add(freeSpace);
-//                        board.getTiles().add(freeSpace);
-
-                        List<Bomberman> killed = new ArrayList<>();
-                        for (Bomberman bomberman : board.getBombermans()) {
-                            if (bomberman.getRow() == tile.getRow() && bomberman.getCol() == tile.getCol()) {
-                                killed.add(bomberman);
-                            }
-                        }
-                        killed.forEach(Bomberman::killMe);
+                        // show breaking block
+                        ImageView breakingBlock = new ImageView(Statics.BLOCK_BREAKING_IMAGE);
+                        breakingBlock.setFitWidth(tile.getWidth());
+                        breakingBlock.setFitHeight(tile.getHeight());
+                        tile.getChildren().add(breakingBlock);
+                    } else {
+                        ImageView fire = new ImageView(Statics.EXPLOSION_IMAGE);
+                        fire.setFitWidth(tile.getWidth());
+                        fire.setFitHeight(tile.getHeight());
+                        tile.getChildren().add(fire);
                     }
+                } else if (tile instanceof FreeSpace) {
+                    if (tile.getChildren().size() == 1) {
+                        ImageView fire = new ImageView(Statics.EXPLOSION_IMAGE);
+                        fire.setFitWidth(tile.getWidth());
+                        fire.setFitHeight(tile.getHeight());
+                        tile.getChildren().add(fire);
+                    } else {
+                        tile.getChildren().get(1).setVisible(true);
+                    }
+                }
+                List<Bomberman> killed = new ArrayList<>();
+                for (Bomberman bomberman : board.getBombermans()) {
+                    if (bomberman.getRow() == tile.getRow() && bomberman.getCol() == tile.getCol()) {
+                        killed.add(bomberman);
+                    }
+                }
+                killed.forEach(bomberman -> {
+                    bomberman.killMe();
+                    System.out.println(String.format("bomberman %s is killed by %s", bomberman.getSystemName(), this.bomberman.getSystemName()));
                 });
             }
-        };
-        Timer timer = new Timer();
-        timer.schedule(task, 100);
+            Utils.runLater(() -> {
+                for (Tile t : toExplodeTiles) {
+                    if (t instanceof Block) {
+                        // hide breaking block
+                        t.getChildren().remove(2);
+//                            t.getChildren().get(2).setVisible(false);
+                        // show free space
+                        t.getChildren().get(1).setVisible(true);
+                        t.setCanPassThrow(true);
+                    } else if (t instanceof FreeSpace) {
+                        t.getChildren().get(1).setVisible(false);
+                    }
+                }
+            }, 100);
 
-
+        }, 100);
+        setExploded(true);
     }
 
     private Tile getToExplodeTile(int i, int j) {
         for (Tile tile : board.getTiles()) {
             if (tile.getRow() == i && tile.getCol() == j) {
-                return tile.canExplode() ? tile : null;
+                return tile.isExplodable() ? tile : null;
             }
         }
         return null;
@@ -92,8 +114,8 @@ public class Bomb extends ImageView {
 
     private List<Tile> getToExplodeRowTiles(int step) {
         List<Tile> tiles = new ArrayList<>();
-        for (int i = 1 * step; i <= explosionRange; i += step) {
-            Tile tile = getToExplodeTile(row, col + i);
+        for (int i = 1; i <= explosionRange; i += Math.abs(step)) {
+            Tile tile = getToExplodeTile(row, col + (i * step));
             if (tile != null) {
                 if (tile instanceof FreeSpace) {
 //                    continue;
@@ -108,8 +130,8 @@ public class Bomb extends ImageView {
 
     private List<Tile> getToExplodeColTiles(int step) {
         List<Tile> tiles = new ArrayList<>();
-        for (int i = 1 * step; i <= explosionRange; i += step) {
-            Tile tile = getToExplodeTile(row + i, col);
+        for (int i = 1; i <= explosionRange; i += Math.abs(step)) {
+            Tile tile = getToExplodeTile(row + (i * step), col);
             if (tile != null) {
                 if (tile instanceof FreeSpace) {
 //                    continue;
@@ -152,5 +174,13 @@ public class Bomb extends ImageView {
 
     public void setCol(int col) {
         this.col = col;
+    }
+
+    public boolean isExploded() {
+        return exploded;
+    }
+
+    public void setExploded(boolean exploded) {
+        this.exploded = exploded;
     }
 }

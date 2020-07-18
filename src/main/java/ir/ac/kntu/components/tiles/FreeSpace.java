@@ -24,7 +24,7 @@ public class FreeSpace extends Tile {
     }
 
     @Override
-    public boolean canExplode() {
+    public boolean isExplodable() {
         return true;
     }
 

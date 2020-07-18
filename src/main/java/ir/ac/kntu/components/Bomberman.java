@@ -3,6 +3,7 @@ package ir.ac.kntu.components;
 import ir.ac.kntu.Statics;
 import ir.ac.kntu.Utils;
 import ir.ac.kntu.actions.UserAction;
+import ir.ac.kntu.components.gifts.Gift;
 import ir.ac.kntu.components.tiles.Tile;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -234,7 +235,7 @@ public class Bomberman extends ImageView {
             System.out.println(String.format("max bombs %s, current bombs %s", maxBombs, bombs.size()));
             return;
         }
-        Bomb bomb = new Bomb(board, getTranslateX(), getTranslateY(), row, col, Statics.BOMB_DELAY, Statics.BOMB_EXPLOSION_RANGE);
+        Bomb bomb = new Bomb(board, this, getTranslateX(), getTranslateY(), row, col, Statics.BOMB_DELAY, Statics.BOMB_EXPLOSION_RANGE);
         bombs.add(bomb);
         board.getChildren().add(bomb);
         startBomb(this, bomb);
@@ -266,7 +267,10 @@ public class Bomberman extends ImageView {
     public void killMe() {
         alive = false;
         board.getChildren().remove(this);
-//        board.getBombermans().remove(this);
+    }
+
+    public void consumeGift(Gift gift) {
+
     }
 
     public String getUsername() {
