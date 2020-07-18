@@ -6,8 +6,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-import java.awt.*;
-
 public class PlayerBoardSection extends VBox {
 
     private final Bomberman bomberman;
@@ -17,8 +15,6 @@ public class PlayerBoardSection extends VBox {
 
     public PlayerBoardSection(Bomberman bomberman) {
         this.bomberman = bomberman;
-//        rect = new Rectangle(Constants.MENU_ITEM_WIDTH, Constants.MENU_ITEM_HEIGHT);
-//        rect.setFill(Color.G);
         ImageView imageView = new ImageView(bomberman.getSystemName().downStanding);
         imageView.setFitWidth(70);
         imageView.setFitHeight(70);
@@ -26,6 +22,8 @@ public class PlayerBoardSection extends VBox {
         text.setDisable(true);
         getChildren().addAll(imageView, text);
         bomberman.setScoreBoard(this);
+        setScore(bomberman.getScore());
+
     }
 
     public void setScore(int score) {

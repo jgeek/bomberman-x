@@ -77,7 +77,7 @@ public class Bomb extends ImageView implements Positionable {
                 }
                 List<Bomberman> killed = new ArrayList<>();
                 for (Bomberman bomberman : board.getBombermans()) {
-                    if (bomberman.getRow() == tile.getRow() && bomberman.getCol() == tile.getCol()) {
+                    if (bomberman.isAlive() && bomberman.getRow() == tile.getRow() && bomberman.getCol() == tile.getCol()) {
                         killed.add(bomberman);
                     }
                 }

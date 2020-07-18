@@ -22,6 +22,10 @@ import java.util.stream.Collectors;
 
 public class GameBoard extends Pane {
 
+    public enum GameStop {
+        TIMEOUT, WINNER, NONE
+    }
+
     private Bomberman systemBomber;
     private String name;
     private int rows;
@@ -134,18 +138,18 @@ public class GameBoard extends Pane {
         timers.add(timer);
 
         gameTimer = Utils.runLater(() -> {
-            stopGame();
+            stopGame(GameStop.TIMEOUT);
 
         }, Constants.GAME_TIME);
 
     }
 
-    public void stopGame() {
+    public void stopGame(GameStop gameStop) {
         timers.forEach(Timer::cancel);
         playing = false;
         System.out.println("Game is over");
 
-        GameOverPanel panel = new GameOverPanel(bombermans);
+        GameOverPanel panel = new GameOverPanel(gameStop, bombermans);
         scene.setRoot(panel);
     }
 
@@ -210,10 +214,11 @@ public class GameBoard extends Pane {
     }
 
     public void removeBomberMan(Bomberman bomberman) {
-        bombermans.remove(bomberman);
+//        bombermans.remove(bomberman);
         getChildren().remove(bomberman);
-        if (bombermans.size() <= 1) {
-            stopGame();
+        long liveMans = bombermans.stream().filter(Bomberman::isAlive).count();
+        if (liveMans <= 1) {
+            stopGame(GameStop.WINNER);
         }
     }
 
