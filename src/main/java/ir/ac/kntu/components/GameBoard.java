@@ -1,11 +1,16 @@
 package ir.ac.kntu.components;
 
 import ir.ac.kntu.Statics;
+import ir.ac.kntu.Utils;
+import ir.ac.kntu.components.gifts.BombBooster;
+import ir.ac.kntu.components.gifts.Gift;
 import ir.ac.kntu.components.tiles.*;
+import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameBoard extends StackPane {
     private String name;
@@ -16,18 +21,13 @@ public class GameBoard extends StackPane {
     private List<Bomberman> bombermans = new ArrayList<>();
     private int minX, minY = 0;
     private int maxX, maxY;
+    List<Timer> timers = new ArrayList<>();
 
     public GameBoard(String name, char[][] data) {
         this.name = name;
         this.data = data;
         maxX = (data[0].length - 1) * Statics.TILE_SIZE;
         maxY = (data.length - 1) * Statics.TILE_SIZE;
-    }
-
-    public GameBoard(String name, int rows, int cols) {
-        this.name = name;
-        this.rows = rows;
-        this.cols = cols;
     }
 
     public void load() {
@@ -40,6 +40,33 @@ public class GameBoard extends StackPane {
             }
         }
         getChildren().addAll(bombermans);
+
+        startTimers();
+    }
+
+    private void startTimers() {
+
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    Tile tile = findRandomFreeTile();
+                    Gift gift = new BombBooster();
+                    positionInTile(tile, gift);
+                });
+            }
+        };
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(task, 0, Statics.BOMB_BOOST_INTERVAL);
+
+    }
+
+    private void positionInTile(Tile tile, Positionable node) {
+        node.setRow(tile.getRow());
+        node.setCol(tile.getCol());
+        ((Node) node).setTranslateX(tile.getTranslateX());
+        ((Node) node).setTranslateY(tile.getTranslateY());
+        getChildren().add((Node) node);
     }
 
     private Tile createTile(int row, int col, char c) {
@@ -67,6 +94,13 @@ public class GameBoard extends StackPane {
             default:
                 throw new IllegalStateException("Unexpected board code: " + c);
         }
+    }
+
+
+    private Tile findRandomFreeTile() {
+        List<Tile> freeTiles = tiles.stream().filter(t -> t.isCanPassThrow()).collect(Collectors.toList());
+        int index = (new Random()).nextInt(freeTiles.size());
+        return freeTiles.get(index);
     }
 
     public List<Bomberman> getBombermans() {

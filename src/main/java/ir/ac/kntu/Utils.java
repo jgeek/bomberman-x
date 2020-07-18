@@ -1,6 +1,8 @@
 package ir.ac.kntu;
 
 import ir.ac.kntu.components.Bomberman;
+import ir.ac.kntu.components.gifts.BombBooster;
+import ir.ac.kntu.components.gifts.Gift;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -31,7 +33,7 @@ public class Utils {
         return new ImageView(loadImage(fileName));
     }
 
-    public static void runLater(Runnable runnable, int delay) {
+    public static Timer runLater(Runnable runnable, int delay) {
         TimerTask task = new TimerTask() {
 
             @Override
@@ -43,5 +45,6 @@ public class Utils {
         };
         Timer timer = new Timer();
         timer.schedule(task, delay);
+        return timer;
     }
 }

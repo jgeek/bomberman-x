@@ -13,6 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 
 public class Bomberman extends ImageView {
@@ -187,7 +188,13 @@ public class Bomberman extends ImageView {
     }
 
     private void checkStatus() {
-
+        Optional<Tile> tile = board.getTiles().stream().filter(t -> t.getRow() == row && t.getCol() == col)
+                .filter(Tile::isInFire)
+                .findFirst();
+        tile.ifPresent(tile1 -> {
+            System.out.println(String.format("bomberman %s went to fire and died", systemName));
+            killMe();
+        });
     }
 
     private double checkMovement(Direction direction) {

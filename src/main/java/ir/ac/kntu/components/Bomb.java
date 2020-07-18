@@ -11,7 +11,7 @@ import javafx.scene.image.ImageView;
 
 import java.util.*;
 
-public class Bomb extends ImageView {
+public class Bomb extends ImageView implements Positionable {
 
     private Bomberman bomberman;
     private int row;
@@ -72,6 +72,7 @@ public class Bomb extends ImageView {
                     } else {
                         tile.getChildren().get(1).setVisible(true);
                     }
+                    tile.setInFire(true);
                 }
                 List<Bomberman> killed = new ArrayList<>();
                 for (Bomberman bomberman : board.getBombermans()) {
@@ -95,9 +96,10 @@ public class Bomb extends ImageView {
                         t.setCanPassThrow(true);
                     } else if (t instanceof FreeSpace) {
                         t.getChildren().get(1).setVisible(false);
+                        t.setInFire(false);
                     }
                 }
-            }, 100);
+            }, Statics.EXPLOSION_REMAIN_TIME);
 
         }, 100);
         setExploded(true);

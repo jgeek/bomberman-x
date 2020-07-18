@@ -8,6 +8,7 @@ public class FreeSpace extends Tile {
 
     public FreeSpace(int row, int col, double width, double height, double x, double y) {
         super(row, col, width, height, x, y);
+        setCanPassThrow(true);
     }
 
     @Override

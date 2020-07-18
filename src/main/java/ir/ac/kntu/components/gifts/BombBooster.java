@@ -2,9 +2,7 @@ package ir.ac.kntu.components.gifts;
 
 import ir.ac.kntu.Statics;
 import ir.ac.kntu.Utils;
-import ir.ac.kntu.components.Bomb;
 import ir.ac.kntu.components.Bomberman;
-import javafx.scene.image.Image;
 
 public class BombBooster extends Gift {
 
