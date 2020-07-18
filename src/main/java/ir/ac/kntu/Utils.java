@@ -19,8 +19,8 @@ public class Utils {
 
     public static ImageView loadBomberManView(Bomberman.SYSTEM_NAMES name, Bomberman.Direction direction, Bomberman.State state) {
         String fileName = String.format("assets/player_%s/player_%s_%s_%s.png",
-                name.toString().toLowerCase(),
-                name.toString().toLowerCase(),
+                name.getName(),
+                name.getName(),
                 direction.toString().toLowerCase(), state.toString().toLowerCase());
         ImageView imageView = new ImageView(loadImage(fileName));
         imageView.setFitHeight(Statics.BOMBERMAN_HEIGHT);

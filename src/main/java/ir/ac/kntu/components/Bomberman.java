@@ -20,6 +20,7 @@ public class Bomberman extends ImageView {
 
     private final GameBoard board;
     private TranslateTransition translateTransition;
+    private boolean bombBoosted;
 
     public enum Direction {
         UP(-1, 'u'), DOWN(1, 'd'), LEFT(-1, 'l'), RIGHT(1, 'r');
@@ -54,29 +55,47 @@ public class Bomberman extends ImageView {
 
 
     public enum SYSTEM_NAMES {
-        WHITE(new KeyDirection(KeyCode.UP, Direction.UP), new KeyDirection(KeyCode.DOWN, Direction.DOWN),
+
+        WHITE("white", new KeyDirection(KeyCode.UP, Direction.UP), new KeyDirection(KeyCode.DOWN, Direction.DOWN),
                 new KeyDirection(KeyCode.LEFT, Direction.LEFT), new KeyDirection(KeyCode.RIGHT, Direction.RIGHT), new InsertBomb(KeyCode.SPACE)),
-        BLACK(new KeyDirection(KeyCode.W, Direction.UP), new KeyDirection(KeyCode.S, Direction.DOWN),
+        BLACK("black", new KeyDirection(KeyCode.W, Direction.UP), new KeyDirection(KeyCode.S, Direction.DOWN),
                 new KeyDirection(KeyCode.A, Direction.LEFT), new KeyDirection(KeyCode.D, Direction.RIGHT), new InsertBomb(KeyCode.ALT)),
-        RED(new KeyDirection(KeyCode.Y, Direction.UP), new KeyDirection(KeyCode.H, Direction.DOWN),
+        RED("red", new KeyDirection(KeyCode.Y, Direction.UP), new KeyDirection(KeyCode.H, Direction.DOWN),
                 new KeyDirection(KeyCode.G, Direction.LEFT), new KeyDirection(KeyCode.J, Direction.RIGHT), new InsertBomb(KeyCode.K)),
-        YELLOW(new KeyDirection(KeyCode.DIGIT5, Direction.UP), new KeyDirection(KeyCode.DIGIT2, Direction.DOWN),
+        YELLOW("yellow", new KeyDirection(KeyCode.DIGIT5, Direction.UP), new KeyDirection(KeyCode.DIGIT2, Direction.DOWN),
+                new KeyDirection(KeyCode.DIGIT1, Direction.LEFT), new KeyDirection(KeyCode.DIGIT3, Direction.RIGHT), new InsertBomb(KeyCode.DIGIT9)),
+        SYSTEM("white", new KeyDirection(KeyCode.DIGIT5, Direction.UP), new KeyDirection(KeyCode.DIGIT2, Direction.DOWN),
                 new KeyDirection(KeyCode.DIGIT1, Direction.LEFT), new KeyDirection(KeyCode.DIGIT3, Direction.RIGHT), new InsertBomb(KeyCode.DIGIT9));
 
-        SYSTEM_NAMES(UserAction... actions) {
+        SYSTEM_NAMES(String name, UserAction... actions) {
+            this.name = name;
             this.userActions = (Arrays.asList(actions));
+
+            downMoving = Utils.loadBomberManView(this, Direction.DOWN, State.MOVING);
+            downStanding = Utils.loadBomberManView(this, Direction.DOWN, State.STANDING);
+            leftMoving = Utils.loadBomberManView(this, Direction.LEFT, State.MOVING);
+            leftStanding = Utils.loadBomberManView(this, Direction.LEFT, State.STANDING);
+            rightMoving = Utils.loadBomberManView(this, Direction.RIGHT, State.MOVING);
+            rightStanding = Utils.loadBomberManView(this, Direction.RIGHT, State.STANDING);
+            upMoving = Utils.loadBomberManView(this, Direction.UP, State.MOVING);
+            upStanding = Utils.loadBomberManView(this, Direction.UP, State.STANDING);
         }
 
+        public String getName() {
+            return name;
+        }
+
+        ImageView downMoving;
+        ImageView downStanding;
+        ImageView leftMoving;
+        ImageView leftStanding;
+        ImageView rightMoving;
+        ImageView rightStanding;
+        ImageView upMoving;
+        ImageView upStanding;
+        String name;
         List<UserAction> userActions;
 
-        ImageView downMoving = Utils.loadBomberManView(this, Direction.DOWN, State.MOVING);
-        ImageView downStanding = Utils.loadBomberManView(this, Direction.DOWN, State.STANDING);
-        ImageView leftMoving = Utils.loadBomberManView(this, Direction.LEFT, State.MOVING);
-        ImageView leftStanding = Utils.loadBomberManView(this, Direction.LEFT, State.STANDING);
-        ImageView rightMoving = Utils.loadBomberManView(this, Direction.RIGHT, State.MOVING);
-        ImageView rightStanding = Utils.loadBomberManView(this, Direction.RIGHT, State.STANDING);
-        ImageView upMoving = Utils.loadBomberManView(this, Direction.UP, State.MOVING);
-        ImageView upStanding = Utils.loadBomberManView(this, Direction.UP, State.STANDING);
 
         public static SYSTEM_NAMES from(char c) {
             switch (c) {
@@ -188,6 +207,7 @@ public class Bomberman extends ImageView {
     }
 
     private void checkStatus() {
+        // check if bomberman comes in a in fire tile
         Optional<Tile> tile = board.getTiles().stream().filter(t -> t.getRow() == row && t.getCol() == col)
                 .filter(Tile::isInFire)
                 .findFirst();
@@ -195,6 +215,10 @@ public class Bomberman extends ImageView {
             System.out.println(String.format("bomberman %s went to fire and died", systemName));
             killMe();
         });
+
+        // check if he get a gift
+        Optional<Gift> gift = board.getGifts().stream().filter(g -> g.getRow() == row && g.getCol() == col).findFirst();
+        gift.ifPresent(g -> g.consumeMe(this));
     }
 
     private double checkMovement(Direction direction) {
@@ -242,19 +266,20 @@ public class Bomberman extends ImageView {
             System.out.println(String.format("max bombs %s, current bombs %s", maxBombs, bombs.size()));
             return;
         }
-        Bomb bomb = new Bomb(board, this, getTranslateX(), getTranslateY(), row, col, Statics.BOMB_DELAY, Statics.BOMB_EXPLOSION_RANGE);
+        Bomb bomb = new Bomb(board, this, getTranslateX(), getTranslateY(), row, col, Statics.BOMB_DELAY,
+                bombBoosted ? Statics.BOMB_BOOSTED_EXPLOSION_RANGE : Statics.BOMB_EXPLOSION_RANGE);
         bombs.add(bomb);
         board.getChildren().add(bomb);
-        startBomb(this, bomb);
+        startBomb(bomb);
     }
 
-    private void startBomb(Bomberman bomberman, Bomb bomb) {
+    public void startBomb(Bomb bomb) {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
                     board.getChildren().remove(bomb);
-                    bomberman.getBombs().remove(bomb);
+                    Bomberman.this.getBombs().remove(bomb);
                     bomb.explode();
                 });
             }
@@ -322,5 +347,17 @@ public class Bomberman extends ImageView {
 
     public boolean isAlive() {
         return alive;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public void setCol(int col) {
+        this.col = col;
+    }
+
+    public void setBombBoosted(boolean bombBoosted) {
+        this.bombBoosted = bombBoosted;
     }
 }

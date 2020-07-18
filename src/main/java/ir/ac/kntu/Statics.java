@@ -1,5 +1,6 @@
 package ir.ac.kntu;
 
+import ir.ac.kntu.components.Bomberman;
 import ir.ac.kntu.components.GameBoard;
 import javafx.scene.image.Image;
 

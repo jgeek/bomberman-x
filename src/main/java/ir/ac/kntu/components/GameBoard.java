@@ -13,6 +13,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GameBoard extends StackPane {
+
+    private Bomberman systemBomber;
+
+
     private String name;
     private int rows;
     private int cols;
@@ -22,6 +26,7 @@ public class GameBoard extends StackPane {
     private int minX, minY = 0;
     private int maxX, maxY;
     List<Timer> timers = new ArrayList<>();
+    List<Gift> gifts = new ArrayList<>();
 
     public GameBoard(String name, char[][] data) {
         this.name = name;
@@ -40,7 +45,10 @@ public class GameBoard extends StackPane {
             }
         }
         getChildren().addAll(bombermans);
-
+        systemBomber = new Bomberman(this, "system", Bomberman.SYSTEM_NAMES.SYSTEM, 0, 0, 0, 0);
+        systemBomber.setMaxBombs(1000);
+        systemBomber.setRow(-1);
+        systemBomber.setCol(-1);
         startTimers();
     }
 
@@ -51,8 +59,28 @@ public class GameBoard extends StackPane {
             public void run() {
                 Platform.runLater(() -> {
                     Tile tile = findRandomFreeTile();
-                    Gift gift = new BombBooster();
-                    positionInTile(tile, gift);
+                    int index = new Random().nextInt(2);
+                    switch (index) {
+                        case 0:
+                            Gift gift = new BombBooster(GameBoard.this);
+                            gifts.add(gift);
+                            positionInTile(tile, gift);
+                            break;
+                        case 1:
+                            Bomb bomb = new Bomb(GameBoard.this, systemBomber, tile.getTranslateX(), tile.getTranslateY(), tile.getRow(),
+                                    tile.getCol(), Statics.BOMB_DELAY, Statics.BOMB_EXPLOSION_RANGE);
+                            getChildren().add(bomb);
+                            systemBomber.getBombs().add(bomb);
+                            systemBomber.startBomb(bomb);
+                            break;
+                        case 2:
+                            char[] signs = {'u', 'd', 'l', 'r'};
+                            char c = signs[new Random().nextInt(signs.length)];
+                            Tile oneWay = new OneWay(tile.getRow(), tile.getCol(), Statics.TILE_SIZE, Statics.TILE_SIZE,
+                                    tile.getCol() * Statics.TILE_SIZE, tile.getRow() * Statics.TILE_SIZE, 's');
+
+                    }
+
                 });
             }
         };
@@ -103,6 +131,10 @@ public class GameBoard extends StackPane {
         return freeTiles.get(index);
     }
 
+    public void removeItem(Node node) {
+        getChildren().remove(node);
+    }
+
     public List<Bomberman> getBombermans() {
         return bombermans;
     }
@@ -125,5 +157,9 @@ public class GameBoard extends StackPane {
 
     public List<Tile> getTiles() {
         return tiles;
+    }
+
+    public List<Gift> getGifts() {
+        return gifts;
     }
 }
