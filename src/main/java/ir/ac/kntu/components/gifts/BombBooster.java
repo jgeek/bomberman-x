@@ -20,7 +20,7 @@ public class BombBooster extends Gift {
         bomberman.getBombs().stream().filter(b -> !b.isExploded())
                 .forEach(b -> b.setExplosionRange(Statics.BOMB_BOOSTED_EXPLOSION_RANGE));
         bomberman.setBombBoosted(true);
-        board.removeItem(this);
+        board.removeGIft(this);
 
         Utils.runLater(() -> {
             bomberman.getBombs().stream().filter(b -> !b.isExploded())

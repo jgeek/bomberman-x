@@ -2,6 +2,7 @@ package ir.ac.kntu.components;
 
 import ir.ac.kntu.Statics;
 import ir.ac.kntu.Utils;
+import ir.ac.kntu.components.gifts.BombAdder;
 import ir.ac.kntu.components.gifts.BombBooster;
 import ir.ac.kntu.components.gifts.Gift;
 import ir.ac.kntu.components.tiles.*;
@@ -64,8 +65,8 @@ public class GameBoard extends StackPane {
             public void run() {
                 Platform.runLater(() -> {
                     Tile tile = findRandomFreeTile();
-                    int index = new Random().nextInt(2);
-                    index = 2;
+                    int index = new Random().nextInt(4);
+                    index = 3;
                     switch (index) {
                         case 0:
                             Gift gift = new BombBooster(GameBoard.this);
@@ -88,20 +89,25 @@ public class GameBoard extends StackPane {
                             tile.setGuestTile(oneWay);
                             getChildren().add(oneWay);
                             disappearAfterAwhile(oneWay);
+                        case 3:
+                            Gift bombAdder = new BombAdder(GameBoard.this);
+                            gifts.add(bombAdder);
+                            positionInTile(tile, bombAdder);
+                            break;
                     }
 
                 });
             }
         };
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(task, 0, Statics.BOMB_BOOST_INTERVAL);
+        timer.scheduleAtFixedRate(task, 0, Statics.GIFT_BOOST_INTERVAL);
         timers.add(timer);
 
         gameTimer = Utils.runLater(() -> {
             timers.forEach(Timer::cancel);
             playing = false;
             System.out.println("Game is over");
-        }, 5000);
+        }, Statics.GAME_TIME);
 
     }
 
@@ -113,7 +119,7 @@ public class GameBoard extends StackPane {
         Timer timer = Utils.runLater(() -> {
             getChildren().remove(tile);
             tile.getHostTile().setGuestTile(null);
-        }, Statics.BOMB_BOOST_INTERVAL);
+        }, Statics.GIFT_BOOST_INTERVAL);
         timers.add(timer);
 
     }
@@ -158,6 +164,11 @@ public class GameBoard extends StackPane {
         List<Tile> freeTiles = tiles.stream().filter(t -> t.isCanPassThrow()).collect(Collectors.toList());
         int index = (new Random()).nextInt(freeTiles.size());
         return freeTiles.get(index);
+    }
+
+    public void removeGIft(Gift gift) {
+        getChildren().remove(gift);
+        gifts.remove(gift);
     }
 
     public void removeItem(Node node) {

@@ -8,7 +8,7 @@ public class Statics {
 
     public static final int BOMBERMAN_WIDTH = 60;
     public static final int BOMBERMAN_HEIGHT = 60;
-    public static final int BOMBERMAN_MAX_CONCURRENT_BOMBS = 2;
+    public static final int BOMBERMAN_MAX_CONCURRENT_BOMBS = 1;
     public static final int BOMB_SIZE = 40;
     public static final int BOMB_DELAY = 3000;
     public static final int BOMB_EXPLOSION_RANGE = 2;
@@ -16,7 +16,7 @@ public class Statics {
     public static final int GAME_TIME = 3 * 60 * 1000;
     public static int EXPLOSION_REMAIN_TIME = 600;
     public static final int BOMB_BOOST_TIME = 15000;
-    public static final int BOMB_BOOST_INTERVAL = 15000;
+    public static final int GIFT_BOOST_INTERVAL = 15000;
     public static int TILE_SIZE = 60;
 
     public static Image FREE_SPACE_IMAGE = Utils.loadImage("assets/map/normal.png");
@@ -26,6 +26,7 @@ public class Statics {
     public static Image BOMB_IMAGE = Utils.loadImage("assets/map/bomb.png");
     public static Image EXPLOSION_IMAGE = Utils.loadImage("assets/map/explosion/fire.png");
     public static final Image BOMB_BOOSTER_IMAGE = Utils.loadImage("assets/map/powerup.png");
+    public static final Image BOMB_ADDER_IMAGE = Utils.loadImage("assets/map/bomb_adder.png");
 
     public static GameBoard getDefaultBoard() {
         return new GameBoard("Default Map", DEFAULT_BOARD_DATA);
