@@ -51,18 +51,12 @@ public class Starter extends Application {
                 }
             });
         } else {
-            Group root = new Group();
             MainPanel mainPanel = new MainPanel();
             scene = new Scene(mainPanel/*, Constants.MAIN_PANEL_WIDTH, Constants.MAIN_PANEL_HEIGHT, Color.rgb(240, 240, 240)*/);
             mainPanel.setScene(scene);
-//        Group root = new Group(board);
-//            scene.setOnKeyPressed(new InputEventHandler(board));
-            stage.initStyle(StageStyle.UTILITY);
+//            stage.initStyle(StageStyle.UTILITY);
             stage.setTitle("Bomberman");
             stage.setScene(scene);
-            stage.setAlwaysOnTop(true);
-//            stage.setWidth(Constants.MAIN_PANEL_WIDTH);
-//            stage.setHeight(Constants.MAIN_PANEL_HEIGHT);
             stage.show();
 
             stage.setOnCloseRequest(new EventHandler<WindowEvent>() {

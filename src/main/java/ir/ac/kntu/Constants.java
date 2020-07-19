@@ -6,7 +6,6 @@ import javafx.scene.image.Image;
 
 public class Constants {
 
-    public static final int GAME_SCORE = 4;
     public static final int BOMBERMAN_WIDTH = 60;
     public static final int BOMBERMAN_HEIGHT = 60;
     public static final int BOMBERMAN_MAX_CONCURRENT_BOMBS = 1;
@@ -16,6 +15,7 @@ public class Constants {
     public static final int BOMB_BOOSTED_EXPLOSION_RANGE = 5;
     //    public static final int GAME_TIME = 5000;
     public static final int GAME_TIME = 3 * 60 * 1000;
+    public static final int GAME_SCORE = 4;
     public static final double MAIN_PANEL_WIDTH = 1000;
     public static final double MAIN_PANEL_HEIGHT = 800;
     public static final double MENU_ITEM_WIDTH = 400;
@@ -50,10 +50,6 @@ public class Constants {
             {'w', 'b', 'b', 'b', 'b', 'b', 'f', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'w'},
             {'w', 'f', 'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w', 'b', 'w', 'f', 'w'},
             {'w', 'f', 'f', 'b', 'b', 'b', 'b', 'f', 'f', 'f', 'f', 'l', 'f', '3', 'w'},
-            {'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'},
-            {'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'},
-            {'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'},
-            {'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'},
             {'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'},
     };
 }

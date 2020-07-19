@@ -6,7 +6,9 @@ import ir.ac.kntu.components.gifts.BombAdder;
 import ir.ac.kntu.components.gifts.BombBooster;
 import ir.ac.kntu.components.gifts.Gift;
 import ir.ac.kntu.components.tiles.*;
+import ir.ac.kntu.navigation.MainPanel;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -16,6 +18,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,9 +29,10 @@ import java.util.stream.Collectors;
 public class GameBoard extends Pane {
 
     public enum GameStop {
-        TIMEOUT, WINNER, NONE
+        TIMEOUT, WINNER, NONE;
     }
 
+    private MainPanel mainPanel;
     private Bomberman systemBomber;
     private String name;
     private int rows;
@@ -48,8 +55,7 @@ public class GameBoard extends Pane {
         this.data = data;
         maxX = (data[0].length - 1) * Constants.TILE_SIZE;
         maxY = (data.length - 1) * Constants.TILE_SIZE;
-//        setWidth(maxX);
-//        setHeight(maxY);
+
     }
 
     public void load() {
@@ -76,7 +82,6 @@ public class GameBoard extends Pane {
         statusBar.setPrefSize(200, maxY);
         bombermans.forEach(b -> statusBar.getChildren().add(new PlayerBoardSection(b)));
         getChildren().add(statusBar);
-        setFocused(true);
 
         systemBomber = new Bomberman(this, "system", Bomberman.SYSTEM_NAMES.SYSTEM, 0, 0, 0, 0);
         systemBomber.setMaxBombs(1000);
@@ -149,8 +154,28 @@ public class GameBoard extends Pane {
         playing = false;
         System.out.println("Game is over");
 
-        GameOverPanel panel = new GameOverPanel(gameStop, bombermans);
-        scene.setRoot(panel);
+//        Platform.runLater(() -> {
+        Stage stage = new Stage();
+        GameOverPanel panel = new GameOverPanel(stage, scene, mainPanel, gameStop, bombermans);
+        Scene newScene = new Scene(panel);
+        stage.setScene(newScene);
+        stage.initStyle(StageStyle.UTILITY);
+
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent event) {
+                scene.setRoot(mainPanel);
+                stage.close();
+            }
+        });
+
+//        stage.setAlwaysOnTop(true);
+//        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.show();
+//        stage.toFront();
+//        });
+//        scene.setRoot(panel);
+//        scene.getWindow().setWidth(600);
+//        scene.getWindow().setHeight(300);
     }
 
     private void disappearAfterAwhile(Tile tile) {
@@ -260,5 +285,9 @@ public class GameBoard extends Pane {
 
     public void setScene(Scene scene) {
         this.scene = scene;
+    }
+
+    public void setMainPanel(MainPanel mainPanel) {
+        this.mainPanel = mainPanel;
     }
 }
