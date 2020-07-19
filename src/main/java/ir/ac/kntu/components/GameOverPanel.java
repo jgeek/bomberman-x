@@ -70,7 +70,7 @@ public class GameOverPanel extends StackPane {
 
         getChildren().addAll(background, box);
         setAlignment(Pos.CENTER);
-        setTranslateX(100);
+        setTranslateX(80);
         setTranslateY(200);
 
 

@@ -170,7 +170,7 @@ public class Bomberman extends ImageView {
         addCol(direction);
         checkStatus();
         correctImage(direction);
-        System.out.println("x " + getTranslateX() + " y " + getTranslateY());
+        System.out.println(username + " row " + row + " col " + col);
     }
 
     private void correctImage(Direction direction) {
@@ -211,7 +211,7 @@ public class Bomberman extends ImageView {
         addRow(direction);
         checkStatus();
         correctImage(direction);
-        System.out.println("x " + getTranslateX() + " y " + getTranslateY());
+        System.out.println(username + ": row " + row + " col " + col);
     }
 
     private boolean checkAlivenessAndGame() {
@@ -305,7 +305,11 @@ public class Bomberman extends ImageView {
                 Platform.runLater(() -> {
                     board.getChildren().remove(bomb);
                     Bomberman.this.getBombs().remove(bomb);
-                    bomb.explode();
+                    if (board.isPlaying()) {
+                        bomb.explode();
+                    } else {
+                        System.out.println("Game is stopped. So ignore explosion of " + bomb);
+                    }
                 });
             }
         };

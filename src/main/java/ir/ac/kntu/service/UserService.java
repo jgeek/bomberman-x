@@ -4,6 +4,8 @@ import ir.ac.kntu.Constants;
 import ir.ac.kntu.data.User;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,7 +36,7 @@ public class UserService {
         FileOutputStream out = null;
         ObjectOutputStream oos = null;
         try {
-            out = new FileOutputStream(Constants.USER_DB_FILE_PATH);
+            out = new FileOutputStream(Constants.USER_DB_FILE);
             oos = new ObjectOutputStream(out);
             oos.writeObject(users);
             oos.flush();
@@ -60,7 +62,7 @@ public class UserService {
         FileInputStream fis = null;
         ObjectInputStream ois = null;
         try {
-            fis = new FileInputStream(Constants.USER_DB_FILE_PATH);
+            fis = new FileInputStream(Constants.USER_DB_FILE);
             ois = new ObjectInputStream(fis);
             users = (List<User>) ois.readObject();
             calculateLastId();
@@ -68,13 +70,17 @@ public class UserService {
             return users;
         } catch (FileNotFoundException e) {
             try {
-                File db = new File(Constants.USER_DB_FILE_PATH);
-                db.createNewFile();
+                File db = new File(Constants.USER_DB_FILE);
+                File parent = db.getParentFile();
+                if (!parent.exists() && !parent.mkdirs()) {
+                    throw new IllegalStateException("Couldn't create dir: " + parent);
+                }
+//                db.createNewFile();
                 FileOutputStream oFile = new FileOutputStream(db, false);
                 System.out.println("db is created");
                 return Collections.emptyList();
             } catch (Exception e2) {
-                System.out.println("could not create file " + Constants.USER_DB_FILE_PATH);
+                System.out.println("could not create file " + Constants.USER_DB_FILE);
                 throw new RuntimeException(e2);
             }
         } catch (Exception e) {

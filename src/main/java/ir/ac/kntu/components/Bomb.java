@@ -156,6 +156,13 @@ public class Bomb extends ImageView implements Positionable {
         return tiles;
     }
 
+    @Override
+    public String toString() {
+        return "Bomb{" +
+                "bomberman=" + bomberman +
+                '}';
+    }
+
     public int getDelay() {
         return delay;
     }

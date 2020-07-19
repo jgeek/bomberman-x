@@ -2,29 +2,27 @@ package ir.ac.kntu.navigation;
 
 import ir.ac.kntu.Constants;
 import ir.ac.kntu.InputEventHandler;
-import ir.ac.kntu.components.Bomberman;
 import ir.ac.kntu.components.GameBoard;
-import ir.ac.kntu.components.tiles.Tile;
+import ir.ac.kntu.components.HallOfFames;
 import ir.ac.kntu.data.GameMap;
 import ir.ac.kntu.data.User;
-import ir.ac.kntu.service.MapProvider;
 import ir.ac.kntu.service.UserService;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainPanel extends Pane {
 
+    private HallOfFames hallOfFamesPanel;
     private List<GameMap> maps;
     private Scene scene;
     private MenuHolder mainMenu;
     private MenuHolder gameMenu;
     private MenuHolder mapMenu;
-    private UserSelectorPanel playerMenu;
+    private UserSelectorPanel playersPanel;
     private GameBoard board;
     private GameMap selectMap = Constants.maps.get(0);
     private List<User> users;
@@ -42,18 +40,27 @@ public class MainPanel extends Pane {
 
         MenuItem startItem = new MenuItem("Start");
         startItem.setOnMousePressed(event -> {
-            gameMenu.setVisible(true);
             mainMenu.setVisible(false);
+            gameMenu.setVisible(true);
         });
-        MenuItem exit = new MenuItem("Exit");
-        exit.setOnMousePressed(event -> {
+        MenuItem hallOfFamesItem = new MenuItem("Hall of Fames");
+        hallOfFamesItem.setOnMousePressed(event -> {
+            mainMenu.setVisible(false);
+            hallOfFamesPanel.setVisible(true);
+        });
+
+        MenuItem exitItem = new MenuItem("Exit");
+        exitItem.setOnMousePressed(event -> {
             System.exit(0);
         });
 
-        mainMenu = new MenuHolder(startItem, exit);
+        mainMenu = new MenuHolder(startItem, hallOfFamesItem, exitItem);
 
         mainMenu.setTranslateX(50);
         mainMenu.setTranslateY(400);
+
+        hallOfFamesPanel = new HallOfFames(mainMenu, userService);
+        hallOfFamesPanel.setVisible(false);
 
         MenuItem playItem = new MenuItem("Play");
         playItem.setOnMousePressed(event -> {
@@ -76,7 +83,7 @@ public class MainPanel extends Pane {
         });
         MenuItem playersItem = new MenuItem("Players");
         playersItem.setOnMousePressed(event -> {
-            playerMenu.setVisible(true);
+            playersPanel.setVisible(true);
             gameMenu.setVisible(false);
         });
 
@@ -95,12 +102,13 @@ public class MainPanel extends Pane {
         gameMenu.setTranslateY(400);
         gameMenu.setVisible(false);
 
-        playerMenu = createPlayerSelectionMenu();
-        playerMenu.setVisible(false);
+        playersPanel = createPlayerSelectionMenu();
+        playersPanel.setVisible(false);
 
         mapMenu = createMapMenu();
 
-        getChildren().addAll(mainMenu, gameMenu, mapMenu, playerMenu);
+//        getChildren().addAll(mainMenu);
+        getChildren().addAll(mainMenu, gameMenu, mapMenu, playersPanel, hallOfFamesPanel);
 
 
     }

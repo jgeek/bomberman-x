@@ -37,8 +37,6 @@ public class GameBoard extends Pane {
 
     public enum GameStop {
         TIMEOUT, WINNER, NONE;
-
-
     }
 
     private MainPanel mainPanel;
@@ -54,7 +52,8 @@ public class GameBoard extends Pane {
     private List<Timer> timers = new ArrayList<>();
     private List<Gift> gifts = new ArrayList<>();
     private Timer gameTimer;
-    private boolean playing;
+    // maybe many thread read it
+    private volatile boolean playing;
     private VBox statusBar;
     private Scene scene;
     private UserService userService;
