@@ -8,9 +8,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class MainMenu extends StackPane {
+public class MenuHolder extends StackPane {
 
-    public MainMenu(MenuItem... items) {
+    public MenuHolder(MenuItem... items) {
 
         Rectangle background = new Rectangle(400, 300);
         background.setOpacity(0.2);

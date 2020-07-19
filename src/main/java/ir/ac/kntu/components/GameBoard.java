@@ -11,8 +11,10 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -55,7 +57,6 @@ public class GameBoard extends Pane {
         this.data = data;
         maxX = (data[0].length - 1) * Constants.TILE_SIZE;
         maxY = (data.length - 1) * Constants.TILE_SIZE;
-
     }
 
     public void load() {
@@ -81,6 +82,15 @@ public class GameBoard extends Pane {
         statusBar.setTranslateY(0);
         statusBar.setPrefSize(200, maxY);
         bombermans.forEach(b -> statusBar.getChildren().add(new PlayerBoardSection(b)));
+        Button back = new Button("Main Menu");
+        back.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                stopGame(GameStop.NONE);
+                scene.setRoot(mainPanel);
+            }
+        });
+        statusBar.getChildren().add(back);
         getChildren().add(statusBar);
 
         systemBomber = new Bomberman(this, "system", Bomberman.SYSTEM_NAMES.SYSTEM, 0, 0, 0, 0);
@@ -153,6 +163,9 @@ public class GameBoard extends Pane {
         timers.forEach(Timer::cancel);
         playing = false;
         System.out.println("Game is over");
+        if (gameStop == GameStop.NONE) {
+            return;
+        }
 
 //        Platform.runLater(() -> {
         Stage stage = new Stage();

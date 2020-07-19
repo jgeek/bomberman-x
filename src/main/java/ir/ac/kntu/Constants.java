@@ -35,6 +35,8 @@ public class Constants {
     public static final Image BOMB_ADDER_IMAGE = Utils.loadImage("assets/map/bomb_adder.png");
     public static final Image BOMBERMAN_BG_IMAGE = Utils.loadImage("assets/images/bomberman-1.png");
 
+    public static String MAP_DIR = "assets/map";
+
     public static GameBoard getDefaultBoard() {
         return new GameBoard("Default Map", DEFAULT_BOARD_DATA);
     }
