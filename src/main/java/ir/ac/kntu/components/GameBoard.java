@@ -172,7 +172,6 @@ public class GameBoard extends Pane {
             return;
         }
 
-//        Platform.runLater(() -> {
         Stage stage = new Stage();
         GameOverPanel panel = new GameOverPanel(stage, scene, mainPanel, gameStop, bombermans);
         Scene newScene = new Scene(panel);
@@ -185,15 +184,7 @@ public class GameBoard extends Pane {
                 stage.close();
             }
         });
-
-//        stage.setAlwaysOnTop(true);
-//        stage.initModality(Modality.APPLICATION_MODAL);
         stage.show();
-//        stage.toFront();
-//        });
-//        scene.setRoot(panel);
-//        scene.getWindow().setWidth(600);
-//        scene.getWindow().setHeight(300);
     }
 
     private void disappearAfterAwhile(Tile tile) {

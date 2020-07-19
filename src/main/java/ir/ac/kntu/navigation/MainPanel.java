@@ -3,13 +3,16 @@ package ir.ac.kntu.navigation;
 import ir.ac.kntu.Constants;
 import ir.ac.kntu.InputEventHandler;
 import ir.ac.kntu.components.GameBoard;
-import ir.ac.kntu.components.data.GameMap;
+import ir.ac.kntu.data.GameMap;
+import ir.ac.kntu.data.User;
+import ir.ac.kntu.service.UserProvider;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainPanel extends Pane {
@@ -19,8 +22,11 @@ public class MainPanel extends Pane {
     private MenuHolder mainMenu;
     private MenuHolder gameMenu;
     private MenuHolder mapMenu;
+    private UserSelectorPanel playerMenu;
     private GameBoard board;
     private GameMap selectMap = Constants.maps.get(0);
+    private List<User> users;
+    private List<User> selectedUsers = new ArrayList<>();
 
     public MainPanel() {
 
@@ -30,11 +36,13 @@ public class MainPanel extends Pane {
         getChildren().add(imageView);
         setPrefSize(Constants.MAIN_PANEL_WIDTH, Constants.MAIN_PANEL_HEIGHT);
 
-        MenuItem startItem = new MenuItem("Start", event -> {
+        MenuItem startItem = new MenuItem("Start");
+        startItem.setOnMousePressed(event -> {
             gameMenu.setVisible(true);
             mainMenu.setVisible(false);
         });
-        MenuItem exit = new MenuItem("Exit", event -> {
+        MenuItem exit = new MenuItem("Exit");
+        exit.setOnMousePressed(event -> {
             System.exit(0);
         });
 
@@ -43,8 +51,9 @@ public class MainPanel extends Pane {
         mainMenu.setTranslateX(50);
         mainMenu.setTranslateY(400);
 
-        MenuItem playItem = new MenuItem("Play", event -> {
-//            board = Constants.getDefaultBoard();
+        MenuItem playItem = new MenuItem("Play");
+        playItem.setOnMousePressed(event -> {
+            board = Constants.getDefaultBoard();
             board = new GameBoard(selectMap.getName(), selectMap.getData());
             board.setMainPanel(this);
             board.load();
@@ -62,14 +71,19 @@ public class MainPanel extends Pane {
             box.getChildren().add(board);
             board.startGame();
         });
-        MenuItem playersItem = new MenuItem("Players", event -> {
-            System.exit(0);
+        MenuItem playersItem = new MenuItem("Players");
+        playersItem.setOnMousePressed(event -> {
+            playerMenu.setVisible(true);
+            gameMenu.setVisible(false);
         });
-        MenuItem mapItem = new MenuItem("Map", event -> {
+
+        MenuItem mapItem = new MenuItem("Map");
+        mapItem.setOnMousePressed(event -> {
             gameMenu.setVisible(false);
             mapMenu.setVisible(true);
         });
-        MenuItem backItem = new MenuItem("Back", event -> {
+        MenuItem backItem = new MenuItem("Back");
+        backItem.setOnMousePressed(event -> {
             gameMenu.setVisible(false);
             mainMenu.setVisible(true);
         });
@@ -78,11 +92,37 @@ public class MainPanel extends Pane {
         gameMenu.setTranslateY(400);
         gameMenu.setVisible(false);
 
+        playerMenu = createPlayerSelectionMenu();
+        playerMenu.setVisible(false);
+
         mapMenu = createMapMenu();
 
-        getChildren().addAll(mainMenu, gameMenu, mapMenu);
+        getChildren().addAll(mainMenu, gameMenu, mapMenu, playerMenu);
 
 
+    }
+
+    private UserSelectorPanel createPlayerSelectionMenu() {
+
+        if (users == null) {
+            users = new UserProvider().list();
+        }
+        UserMenuItem[] items = new UserMenuItem[users.size()];
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            UserMenuItem item = new UserMenuItem(user);
+            item.setOnMousePressed(event -> {
+                if (selectedUsers.contains(user)) {
+                    selectedUsers.remove(user);
+                    item.setSelected(false);
+                } else {
+                    selectedUsers.add(user);
+                    item.setSelected(true);
+                }
+            });
+            items[i] = item;
+        }
+        return new UserSelectorPanel(gameMenu, items);
     }
 
     private MenuHolder createMapMenu() {
@@ -93,15 +133,20 @@ public class MainPanel extends Pane {
             return mapMenu;
         }
         for (GameMap map : maps) {
-            mapMenu.addItem(new MapMenuItem(map, new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    MainPanel.this.selectMap = map;
-                    MainPanel.this.mapMenu.setVisible(false);
-                    MainPanel.this.gameMenu.setVisible(true);
-                }
-            }));
+            MapMenuItem item = new MapMenuItem(map);
+            item.setOnMousePressed(event -> {
+                MainPanel.this.selectMap = map;
+                MainPanel.this.mapMenu.setVisible(false);
+                MainPanel.this.gameMenu.setVisible(true);
+            });
+            mapMenu.addItem(item);
         }
+        MenuItem back = new MenuItem("Back");
+        back.setOnMousePressed(event -> {
+            mapMenu.setVisible(false);
+            gameMenu.setVisible(true);
+        });
+        mapMenu.addItem(back);
         mapMenu.setVisible(false);
         return mapMenu;
     }

@@ -1,4 +1,4 @@
-package ir.ac.kntu.components.data;
+package ir.ac.kntu.data;
 
 public class GameMap {
 

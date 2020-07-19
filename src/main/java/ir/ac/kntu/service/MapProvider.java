@@ -2,7 +2,7 @@ package ir.ac.kntu.service;
 
 import ir.ac.kntu.Constants;
 import ir.ac.kntu.Utils;
-import ir.ac.kntu.components.data.GameMap;
+import ir.ac.kntu.data.GameMap;
 
 import java.io.File;
 import java.io.IOException;

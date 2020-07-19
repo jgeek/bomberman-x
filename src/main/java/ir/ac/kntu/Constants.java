@@ -1,7 +1,7 @@
 package ir.ac.kntu;
 
 import ir.ac.kntu.components.GameBoard;
-import ir.ac.kntu.components.data.GameMap;
+import ir.ac.kntu.data.GameMap;
 import ir.ac.kntu.service.MapProvider;
 import javafx.scene.image.Image;
 
