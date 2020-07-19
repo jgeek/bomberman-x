@@ -2,14 +2,14 @@ package ir.ac.kntu.navigation;
 
 import ir.ac.kntu.Constants;
 import ir.ac.kntu.InputEventHandler;
+import ir.ac.kntu.components.Bomberman;
 import ir.ac.kntu.components.GameBoard;
 import ir.ac.kntu.data.GameMap;
 import ir.ac.kntu.data.User;
-import ir.ac.kntu.service.UserProvider;
-import javafx.event.EventHandler;
+import ir.ac.kntu.service.MapProvider;
+import ir.ac.kntu.service.UserService;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
 import java.util.ArrayList;
@@ -27,6 +27,8 @@ public class MainPanel extends Pane {
     private GameMap selectMap = Constants.maps.get(0);
     private List<User> users;
     private List<User> selectedUsers = new ArrayList<>();
+
+    private UserService userService = new UserService();
 
     public MainPanel() {
 
@@ -105,24 +107,14 @@ public class MainPanel extends Pane {
     private UserSelectorPanel createPlayerSelectionMenu() {
 
         if (users == null) {
-            users = new UserProvider().list();
+            users = userService.list();
         }
-        UserMenuItem[] items = new UserMenuItem[users.size()];
-        for (int i = 0; i < users.size(); i++) {
-            User user = users.get(i);
+        UserSelectorPanel userSelector = new UserSelectorPanel(userService, gameMenu, selectedUsers);
+        for (User user : users) {
             UserMenuItem item = new UserMenuItem(user);
-            item.setOnMousePressed(event -> {
-                if (selectedUsers.contains(user)) {
-                    selectedUsers.remove(user);
-                    item.setSelected(false);
-                } else {
-                    selectedUsers.add(user);
-                    item.setSelected(true);
-                }
-            });
-            items[i] = item;
+            userSelector.addItem(item);
         }
-        return new UserSelectorPanel(gameMenu, items);
+        return userSelector;
     }
 
     private MenuHolder createMapMenu() {
