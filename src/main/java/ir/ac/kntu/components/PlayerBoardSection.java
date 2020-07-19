@@ -2,13 +2,11 @@ package ir.ac.kntu.components;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 
 public class PlayerBoardSection extends Pane {
 
@@ -16,11 +14,11 @@ public class PlayerBoardSection extends Pane {
     private final ImageView imageView;
     Label scoreField = new Label("0");
 
-    public PlayerBoardSection(Bomberman bomberman) {
+    public PlayerBoardSection(Bomberman bomberman, Image image) {
 
         this.bomberman = bomberman;
 
-        imageView = new ImageView(bomberman.getCurrentImage());
+        imageView = new ImageView(image);
         imageView.setFitWidth(70);
         imageView.setFitHeight(70);
 
@@ -43,8 +41,8 @@ public class PlayerBoardSection extends Pane {
         box.setBorder(new Border(new BorderStroke(Color.GREEN,
                 BorderStrokeStyle.DASHED, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         getChildren().add(box);
-        bomberman.setScoreBoard(this);
-        setScore(bomberman.getScore());
+//        bomberman.setScoreBoard(this);
+//        setScore(bomberman.getScore());
         setPrefWidth(200);
     }
 

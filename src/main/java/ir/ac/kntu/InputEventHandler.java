@@ -36,7 +36,7 @@ public class InputEventHandler implements EventHandler<KeyEvent> {
             return;
         }
         if (!board.isPlaying()) {
-            System.out.printf("Game is over");
+            System.out.println("Game is over");
             return;
         }
         if (!bomberman.isAlive()) {

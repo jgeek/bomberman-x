@@ -11,24 +11,16 @@ import ir.ac.kntu.data.User;
 import ir.ac.kntu.navigation.MainPanel;
 import ir.ac.kntu.service.UserService;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,8 +29,10 @@ public class GameBoard extends Pane {
 
     public enum GameStop {
         TIMEOUT, WINNER, NONE;
+
     }
 
+    private Label timerLabel;
     private MainPanel mainPanel;
     private Bomberman systemBomber;
     private String name;
@@ -99,7 +93,20 @@ public class GameBoard extends Pane {
         statusBar.setTranslateX(maxX + Constants.TILE_SIZE);
         statusBar.setTranslateY(0);
         statusBar.setPrefSize(200, maxY);
-        bombermans.forEach(b -> statusBar.getChildren().add(new PlayerBoardSection(b)));
+        bombermans.forEach(b -> {
+            PlayerBoardSection section = new PlayerBoardSection(b, b.getSystemName().downStanding);
+            statusBar.getChildren().add(section);
+            b.setScoreBoard(section);
+        });
+
+        timerLabel = new Label(Constants.GAME_TIME / 1000 + "");
+        timerLabel.setFont(Font.font(20));
+        timerLabel.setStyle("-fx-background-color: yellow;");
+        timerLabel.setTextFill(Color.RED);
+        timerLabel.setPrefWidth(200);
+        timerLabel.setAlignment(Pos.CENTER);
+        timerLabel.paddingProperty().set(new Insets(5, 0, 5, 0));
+
         Label back = new Label("Main Menu");
         back.setStyle("-fx-border-color:black; -fx-background-color: white;-fx-label-padding: 5");
         back.setPrefWidth(200);
@@ -111,7 +118,7 @@ public class GameBoard extends Pane {
             stopGame(GameStop.NONE);
             scene.setRoot(mainPanel);
         });
-        statusBar.getChildren().add(back);
+        statusBar.getChildren().addAll(timerLabel, back);
         getChildren().add(statusBar);
 
         systemBomber = new Bomberman(this, "system", Bomberman.SYSTEM_NAMES.SYSTEM, 0, 0, 0, 0);
@@ -123,8 +130,14 @@ public class GameBoard extends Pane {
     }
 
     public void startGame() {
-        playing = true;
-        startTimers();
+        Timer start = new Timer();
+        start.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                playing = true;
+                startTimers();
+            }
+        }, Constants.GAME_START_DELAY);
     }
 
     private void startTimers() {
@@ -178,6 +191,11 @@ public class GameBoard extends Pane {
 
         }, Constants.GAME_TIME);
         timers.add(gameTimer);
+
+        TimerTask timerTask = new CountDownTimer(timerLabel, Constants.GAME_TIME / 1000);
+        Timer timerTimer = new Timer();
+        timerTimer.scheduleAtFixedRate(timerTask, 0, 1000);
+        timers.add(timerTimer);
 
     }
 

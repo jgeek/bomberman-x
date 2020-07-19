@@ -20,6 +20,7 @@ public class Constants {
     //    public static final int GAME_TIME = 5000;
     public static final int GAME_TIME = 3 * 60 * 1000;
     public static final int GAME_SCORE = 4;
+    public static final int GAME_START_DELAY = 5000;
     public static final double MAIN_PANEL_WIDTH = 1100;
     public static final double MAIN_PANEL_HEIGHT = 800;
     public static final double MENU_ITEM_WIDTH = 400;

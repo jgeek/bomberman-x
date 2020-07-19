@@ -56,7 +56,12 @@ public class GameOverPanel extends StackPane {
         background.setFill(Color.rgb(233, 237, 232));
 
         HBox hBox = new HBox();
-        bombermans.forEach(b -> hBox.getChildren().add(new PlayerBoardSection(b)));
+        bombermans.forEach(b -> {
+            PlayerBoardSection section = new PlayerBoardSection(b, b.getSystemName().downStanding);
+//            b.setScoreBoard(section);
+            section.setScore(b.getScore());
+            hBox.getChildren().add(section);
+        });
 
         Button button = new Button("Main Menu");
         button.setOnMouseClicked(event -> {
