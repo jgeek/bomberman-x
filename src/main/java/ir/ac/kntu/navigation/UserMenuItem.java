@@ -29,6 +29,7 @@ public class UserMenuItem extends MenuItem {
                 int maxPlayerCount = Bomberman.SYSTEM_NAMES.values().length - 1;
                 if (selectedUsers.size() == maxPlayerCount) {
                     System.out.println(String.format("at most %s player can be added", maxPlayerCount));
+                    return;
                 }
                 selectedUsers.add(user);
                 setSelected(true);

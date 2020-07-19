@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -42,21 +43,20 @@ public class UserSelectorPanel extends StackPane {
         shadow.setSpread(0.8);
         background.setEffect(shadow);
 
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.TOP_CENTER);
+        vBox.setSpacing(0);
+
         grid = new GridPane();
         grid.setAlignment(Pos.TOP_RIGHT);
-        grid.setPadding(new Insets(85, 0, 0, 0));
+        grid.setPadding(new Insets(20, 0, 0, 0));
         grid.setHgap(10);
         grid.setVgap(10);
 
-//        for (MenuItem item : items) {
-//            grid.add(item, col, row, 1, 1);
-//            col++;
-//            if (col % 5 == 0) {
-//                col = 0;
-//                row++;
-//            }
-//        }
-
+        HBox hBox = new HBox();
+        hBox.setSpacing(10);
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setPadding(new Insets(30, 0, 0, 0));
         Button back = new Button("Back");
         back.setPrefWidth(100);
         back.setOnMouseClicked(event -> {
@@ -66,26 +66,13 @@ public class UserSelectorPanel extends StackPane {
         Button newPlayer = new Button("New Player");
         newPlayer.setPrefWidth(120);
         newPlayer.setOnMouseClicked(event -> {
-            NewUserPanel panel = new NewUserPanel(UserSelectorPanel.this);
-            UserSelectorPanel.this.getChildren().add(panel);
-//            UserSelectorPanel.this.setVisible(false);
-
-//            Stage stage = new Stage();
-//            NewUserPanel panel = new NewUserPanel(UserSelectorPanel.this, stage);
-//            Scene newScene = new Scene(panel);
-//            stage.setScene(newScene);
-//            stage.initStyle(StageStyle.UTILITY);
-//
-//            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-//                public void handle(WindowEvent event) {
-//                    scene.setRoot(mainPanel);
-//                    stage.close();
-//                }
-//            });
-//            stage.show();
-
+            NewUserPanel userPanel = new NewUserPanel(UserSelectorPanel.this);
+            UserSelectorPanel.this.getChildren().add(userPanel);
         });
-        getChildren().addAll(background, grid, back, newPlayer);
+
+        hBox.getChildren().addAll(back, newPlayer);
+        vBox.getChildren().addAll(grid, hBox);
+        getChildren().addAll(background, vBox);
         setTranslateX(50);
         setTranslateY(50);
     }
@@ -101,6 +88,7 @@ public class UserSelectorPanel extends StackPane {
     }
 
     public void addUser(User user) {
+        addItem(new UserMenuItem(user));
         try {
             userService.add(user);
         } catch (IOException e) {

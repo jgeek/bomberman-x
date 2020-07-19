@@ -25,18 +25,19 @@ public class NewUserPanel extends StackPane {
     public NewUserPanel(UserSelectorPanel parent) {
 
         Rectangle background = new Rectangle(300, 150);
-        background.setOpacity(.9);
+        background.setOpacity(.4);
         DropShadow shadow = new DropShadow(7, 5, 0, Color.BLACK);
         shadow.setSpread(0.8);
         background.setEffect(shadow);
 
         GridPane grid = new GridPane();
-//        grid.setAlignment(Pos.TOP_RIGHT);
-        grid.setPadding(new Insets(85, 0, 0, 0));
+        grid.setAlignment(Pos.CENTER);
+        grid.setPadding(new Insets(10, 0, 0, 0));
         grid.setHgap(10);
         grid.setVgap(10);
-        Label label = new Label("Name:");
 
+        Label label = new Label("Name:");
+        label.setTextFill(Color.WHITE);
         TextField text = new TextField("");
         text.setPrefWidth(200);
 
