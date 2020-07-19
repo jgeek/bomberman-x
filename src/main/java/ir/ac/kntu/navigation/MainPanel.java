@@ -1,12 +1,18 @@
 package ir.ac.kntu.navigation;
 
+import com.sun.tools.javac.Main;
 import ir.ac.kntu.Constants;
 import ir.ac.kntu.InputEventHandler;
 import ir.ac.kntu.components.GameBoard;
 import ir.ac.kntu.components.GameMap;
 import ir.ac.kntu.service.MapProvider;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
 import java.io.IOException;
@@ -45,8 +51,17 @@ public class MainPanel extends Pane {
             board.setMainPanel(this);
             board.load();
             board.setScene(scene);
-            scene.setRoot(board);
+            HBox box = new HBox();
+            scene.setRoot(box);
             scene.setOnKeyPressed(new InputEventHandler(board));
+
+//            scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<Event>() {
+//                @Override
+//                public void handle(Event event) {
+//                    System.out.println(event);
+//                }
+//            });
+            box.getChildren().add(board);
             board.startGame();
         });
         MenuItem playersItem = new MenuItem("Players", event -> {

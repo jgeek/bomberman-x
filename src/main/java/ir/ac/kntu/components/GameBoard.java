@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -82,7 +83,10 @@ public class GameBoard extends Pane {
         statusBar.setTranslateY(0);
         statusBar.setPrefSize(200, maxY);
         bombermans.forEach(b -> statusBar.getChildren().add(new PlayerBoardSection(b)));
-        Button back = new Button("Main Menu");
+        Label back = new Label("Main Menu");
+        back.setStyle("-fx-border-color:black; -fx-background-color: white;-fx-label-padding: 5");
+        // button get focus and consumes the key actions
+//        Button back = new Button("Main Menu");
         back.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
