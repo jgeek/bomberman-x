@@ -5,15 +5,15 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class Utils {
@@ -62,9 +62,35 @@ public class Utils {
     }
 
     public static File[] getResourceFolderFiles(String folder) {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        URL url = loader.getResource(folder);
+//        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+//        URL url = loader.getResource(folder);
+        URL url = Utils.class.getClassLoader().getResource(folder);
         String path = url.getPath();
+        Arrays.stream(new File(path).listFiles()).forEach(System.out::println);
         return new File(path).listFiles();
+    }
+
+    public static List<String> readLine(File file) throws IOException {
+
+        FileReader fr = null;
+        BufferedReader br = null;
+        try {
+            fr = new FileReader(file);
+            br = new BufferedReader(fr);
+
+            List<String> lines = new ArrayList<>();
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+            return lines;
+        } finally {
+            if (br != null) {
+                br.close();
+            }
+            if (fr != null) {
+                fr.close();
+            }
+        }
     }
 }

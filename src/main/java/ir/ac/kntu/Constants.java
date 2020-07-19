@@ -1,8 +1,12 @@
 package ir.ac.kntu;
 
-import ir.ac.kntu.components.Bomberman;
 import ir.ac.kntu.components.GameBoard;
+import ir.ac.kntu.components.data.GameMap;
+import ir.ac.kntu.service.MapProvider;
 import javafx.scene.image.Image;
+
+import java.io.IOException;
+import java.util.List;
 
 public class Constants {
 
@@ -35,7 +39,7 @@ public class Constants {
     public static final Image BOMB_ADDER_IMAGE = Utils.loadImage("assets/map/bomb_adder.png");
     public static final Image BOMBERMAN_BG_IMAGE = Utils.loadImage("assets/images/bomberman-1.png");
 
-    public static String MAP_DIR = "assets/map";
+    public static String MAP_DIR = "map";
 
     public static GameBoard getDefaultBoard() {
         return new GameBoard("Default Map", DEFAULT_BOARD_DATA);
@@ -54,4 +58,16 @@ public class Constants {
             {'w', 'f', 'f', 'b', 'b', 'b', 'b', 'f', 'f', 'f', 'f', 'l', 'f', '3', 'w'},
             {'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'},
     };
+
+    public static List<GameMap> maps = null;
+
+    static {
+        try {
+            maps = new MapProvider().list();
+            System.out.println("Maps loaded");
+        } catch (IOException e) {
+            System.out.println("error in loading maps");
+            e.printStackTrace();
+        }
+    }
 }

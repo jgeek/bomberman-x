@@ -10,6 +10,8 @@ import javafx.scene.shape.Rectangle;
 
 public class MenuHolder extends StackPane {
 
+    private final VBox vbox;
+
     public MenuHolder(MenuItem... items) {
 
         Rectangle background = new Rectangle(400, 300);
@@ -18,11 +20,18 @@ public class MenuHolder extends StackPane {
         shadow.setSpread(0.8);
         background.setEffect(shadow);
 
-        VBox vbox = new VBox();
+        vbox = new VBox();
         vbox.setAlignment(Pos.TOP_RIGHT);
         vbox.setPadding(new Insets(85, 0, 0, 0));
         vbox.getChildren().addAll(items);
 
         getChildren().addAll(background, vbox);
+
+        setTranslateX(50);
+        setTranslateY(400);
+    }
+
+    public void addItem(MenuItem item) {
+        vbox.getChildren().add(item);
     }
 }

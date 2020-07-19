@@ -160,6 +160,7 @@ public class GameBoard extends Pane {
             stopGame(GameStop.TIMEOUT);
 
         }, Constants.GAME_TIME);
+        timers.add(gameTimer);
 
     }
 

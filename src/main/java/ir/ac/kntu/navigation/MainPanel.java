@@ -1,29 +1,26 @@
 package ir.ac.kntu.navigation;
 
-import com.sun.tools.javac.Main;
 import ir.ac.kntu.Constants;
 import ir.ac.kntu.InputEventHandler;
 import ir.ac.kntu.components.GameBoard;
-import ir.ac.kntu.components.GameMap;
-import ir.ac.kntu.service.MapProvider;
-import javafx.event.Event;
+import ir.ac.kntu.components.data.GameMap;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
-import java.io.IOException;
 import java.util.List;
 
 public class MainPanel extends Pane {
 
+    private List<GameMap> maps;
     private Scene scene;
     private MenuHolder mainMenu;
     private MenuHolder gameMenu;
+    private MenuHolder mapMenu;
     private GameBoard board;
+    private GameMap selectMap = Constants.maps.get(0);
 
     public MainPanel() {
 
@@ -47,7 +44,8 @@ public class MainPanel extends Pane {
         mainMenu.setTranslateY(400);
 
         MenuItem playItem = new MenuItem("Play", event -> {
-            board = Constants.getDefaultBoard();
+//            board = Constants.getDefaultBoard();
+            board = new GameBoard(selectMap.getName(), selectMap.getData());
             board.setMainPanel(this);
             board.load();
             board.setScene(scene);
@@ -68,13 +66,8 @@ public class MainPanel extends Pane {
             System.exit(0);
         });
         MenuItem mapItem = new MenuItem("Map", event -> {
-            try {
-                List<GameMap> maps = new MapProvider().list();
-                System.out.println("Maps loaded");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.exit(0);
+            gameMenu.setVisible(false);
+            mapMenu.setVisible(true);
         });
         MenuItem backItem = new MenuItem("Back", event -> {
             gameMenu.setVisible(false);
@@ -85,10 +78,32 @@ public class MainPanel extends Pane {
         gameMenu.setTranslateY(400);
         gameMenu.setVisible(false);
 
+        mapMenu = createMapMenu();
 
-        getChildren().addAll(mainMenu, gameMenu);
+        getChildren().addAll(mainMenu, gameMenu, mapMenu);
 
 
+    }
+
+    private MenuHolder createMapMenu() {
+
+        MenuHolder mapMenu = new MenuHolder();
+        List<GameMap> maps = Constants.maps;
+        if (maps == null) {
+            return mapMenu;
+        }
+        for (GameMap map : maps) {
+            mapMenu.addItem(new MapMenuItem(map, new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    MainPanel.this.selectMap = map;
+                    MainPanel.this.mapMenu.setVisible(false);
+                    MainPanel.this.gameMenu.setVisible(true);
+                }
+            }));
+        }
+        mapMenu.setVisible(false);
+        return mapMenu;
     }
 
     public void setScene(Scene scene) {
