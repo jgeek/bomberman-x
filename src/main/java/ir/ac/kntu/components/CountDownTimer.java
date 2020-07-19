@@ -17,6 +17,8 @@ public class CountDownTimer extends TimerTask {
 
     @Override
     public void run() {
+        if (count == 0)
+            return;
         count--;
         Platform.runLater(() -> label.setText(count + ""));
     }

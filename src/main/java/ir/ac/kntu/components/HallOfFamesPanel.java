@@ -1,5 +1,6 @@
 package ir.ac.kntu.components;
 
+import ir.ac.kntu.data.DatabaseStateAware;
 import ir.ac.kntu.data.User;
 import ir.ac.kntu.navigation.MenuHolder;
 import ir.ac.kntu.service.UserService;
@@ -16,9 +17,11 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.List;
 
-public class HallOfFamesPanel extends StackPane {
+public class HallOfFamesPanel extends StackPane implements DatabaseStateAware {
 
     private final UserService userService;
+    private TableView<User> tableView;
+    private List<User> users;
 
     public HallOfFamesPanel(MenuHolder mainMenu, UserService userService) {
 
@@ -30,7 +33,7 @@ public class HallOfFamesPanel extends StackPane {
         shadow.setSpread(0.8);
         background.setEffect(shadow);
 
-        TableView<User> tableView = new TableView();
+        tableView = new TableView();
 
         TableColumn<User, String> idCol = new TableColumn<>("ID");
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -55,10 +58,7 @@ public class HallOfFamesPanel extends StackPane {
         tableView.getColumns().add(defeatsCol);
         tableView.getColumns().add(drawsCol);
 
-        List<User> users = userService.list();
-        for (User user : users) {
-            tableView.getItems().add(user);
-        }
+        loadUsers(userService.readAll());
 
         Button back = new Button("Back");
         back.setPrefWidth(100);
@@ -82,4 +82,16 @@ public class HallOfFamesPanel extends StackPane {
         return label;
     }
 
+    private void loadUsers(List<User> users) {
+        this.users = users;
+        for (User user : users) {
+            tableView.getItems().add(user);
+        }
+    }
+
+    @Override
+    public void update(List<User> users) {
+        tableView.getItems().removeAll(this.users);
+        loadUsers(users);
+    }
 }

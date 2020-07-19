@@ -1,6 +1,7 @@
 package ir.ac.kntu.service;
 
 import ir.ac.kntu.Constants;
+import ir.ac.kntu.data.DatabaseStateAware;
 import ir.ac.kntu.data.User;
 
 import java.io.*;
@@ -14,10 +15,11 @@ import java.util.List;
 public class UserService {
 
     private static int LAST_ID = 0;
-    private List<User> users = new ArrayList<>();
+    private List<User> users;
+    private List<DatabaseStateAware> dataLovers = new ArrayList<>();
 
     public List<User> list() {
-        if (users.isEmpty()) {
+        if (users == null) {
             readAll();
         }
         return users;
@@ -45,6 +47,7 @@ public class UserService {
             oos.writeObject(users);
             oos.flush();
             System.out.println("db updated successfully");
+            notifyDataLovers();
         } catch (Exception e) {
             System.out.println("could not save users to db");
             throw new RuntimeException(e);
@@ -106,5 +109,13 @@ public class UserService {
 
     private void calculateLastId() {
         LAST_ID = users.stream().mapToInt(User::getId).max().getAsInt();
+    }
+
+    public void subscribe(DatabaseStateAware dataLover) {
+        dataLovers.add(dataLover);
+    }
+
+    private void notifyDataLovers() {
+        dataLovers.forEach(o -> o.update(users));
     }
 }

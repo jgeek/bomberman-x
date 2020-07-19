@@ -28,10 +28,13 @@ public class MainPanel extends Pane {
     private List<User> users;
     private List<User> selectedUsers = new ArrayList<>();
 
-    private UserService userService = new UserService();
+    private UserService userService;
 
-    public MainPanel() {
+    public MainPanel(UserService userService) {
+        this.userService = userService;
+    }
 
+    public void init() {
         ImageView imageView = new ImageView(Constants.BOMBERMAN_BG_IMAGE);
         imageView.setFitWidth(Constants.MAIN_PANEL_WIDTH);
         imageView.setFitHeight(Constants.MAIN_PANEL_HEIGHT);
@@ -43,7 +46,7 @@ public class MainPanel extends Pane {
             mainMenu.setVisible(false);
             gameMenu.setVisible(true);
         });
-        MenuItem hallOfFamesItem = new MenuItem("Hall of Fames");
+        MenuItem hallOfFamesItem = new MenuItem("Hall of Fame");
         hallOfFamesItem.setOnMousePressed(event -> {
             mainMenu.setVisible(false);
             hallOfFamesPanel.setVisible(true);
@@ -61,6 +64,7 @@ public class MainPanel extends Pane {
 
         hallOfFamesPanel = new HallOfFamesPanel(mainMenu, userService);
         hallOfFamesPanel.setVisible(false);
+        userService.subscribe(hallOfFamesPanel);
 
         MenuItem playItem = new MenuItem("Play");
         playItem.setOnMousePressed(event -> {
@@ -110,7 +114,6 @@ public class MainPanel extends Pane {
 //        getChildren().addAll(mainMenu);
         getChildren().addAll(mainMenu, gameMenu, mapMenu, playersPanel, hallOfFamesPanel);
 
-
     }
 
     private UserSelectorPanel createPlayerSelectionMenu() {
@@ -155,5 +158,4 @@ public class MainPanel extends Pane {
     public void setScene(Scene scene) {
         this.scene = scene;
     }
-
 }

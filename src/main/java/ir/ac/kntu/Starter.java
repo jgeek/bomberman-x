@@ -1,16 +1,10 @@
 package ir.ac.kntu;
 
-import ir.ac.kntu.components.GameBoard;
 import ir.ac.kntu.navigation.MainPanel;
+import ir.ac.kntu.service.UserService;
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
 
 public class Starter extends Application {
 
@@ -20,10 +14,10 @@ public class Starter extends Application {
 
     public void start(Stage stage) {
 
-        MainPanel mainPanel = null;
         try {
-            mainPanel = new MainPanel();
-            Scene scene = new Scene(mainPanel/*, Constants.MAIN_PANEL_WIDTH, Constants.MAIN_PANEL_HEIGHT, Color.rgb(240, 240, 240)*/);
+            MainPanel mainPanel = new MainPanel(new UserService());
+            mainPanel.init();
+            Scene scene = new Scene(mainPanel);
             mainPanel.setScene(scene);
             // stage.initStyle(StageStyle.UTILITY);
             stage.setTitle("Bomberman");
