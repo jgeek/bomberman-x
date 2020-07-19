@@ -3,7 +3,7 @@ package ir.ac.kntu.navigation;
 import ir.ac.kntu.Constants;
 import ir.ac.kntu.InputEventHandler;
 import ir.ac.kntu.components.GameBoard;
-import ir.ac.kntu.components.HallOfFames;
+import ir.ac.kntu.components.HallOfFamesPanel;
 import ir.ac.kntu.data.GameMap;
 import ir.ac.kntu.data.User;
 import ir.ac.kntu.service.UserService;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class MainPanel extends Pane {
 
-    private HallOfFames hallOfFamesPanel;
+    private HallOfFamesPanel hallOfFamesPanel;
     private List<GameMap> maps;
     private Scene scene;
     private MenuHolder mainMenu;
@@ -59,7 +59,7 @@ public class MainPanel extends Pane {
         mainMenu.setTranslateX(50);
         mainMenu.setTranslateY(400);
 
-        hallOfFamesPanel = new HallOfFames(mainMenu, userService);
+        hallOfFamesPanel = new HallOfFamesPanel(mainMenu, userService);
         hallOfFamesPanel.setVisible(false);
 
         MenuItem playItem = new MenuItem("Play");
@@ -116,7 +116,7 @@ public class MainPanel extends Pane {
     private UserSelectorPanel createPlayerSelectionMenu() {
 
         if (users == null) {
-            users = userService.readAll();
+            users = userService.list();
         }
         UserSelectorPanel userSelector = new UserSelectorPanel(userService, gameMenu, selectedUsers);
         for (User user : users) {

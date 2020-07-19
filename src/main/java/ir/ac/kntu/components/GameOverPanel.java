@@ -73,7 +73,6 @@ public class GameOverPanel extends StackPane {
         setTranslateX(80);
         setTranslateY(200);
 
-
         if (gameStop != GameBoard.GameStop.NONE) {
             System.out.println("updating user data to db");
             bombermans.forEach(b -> b.getUser().incGames());
