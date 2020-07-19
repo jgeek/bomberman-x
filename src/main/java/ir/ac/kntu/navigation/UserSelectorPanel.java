@@ -1,28 +1,18 @@
 package ir.ac.kntu.navigation;
 
-import ir.ac.kntu.components.GameOverPanel;
 import ir.ac.kntu.data.User;
-import ir.ac.kntu.service.InformNewUser;
 import ir.ac.kntu.service.UserService;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
-
-import java.io.IOException;
 import java.util.List;
 
 public class UserSelectorPanel extends StackPane {
@@ -48,7 +38,7 @@ public class UserSelectorPanel extends StackPane {
         vBox.setSpacing(0);
 
         grid = new GridPane();
-        grid.setAlignment(Pos.TOP_RIGHT);
+        grid.setAlignment(Pos.TOP_LEFT);
         grid.setPadding(new Insets(20, 0, 0, 0));
         grid.setHgap(10);
         grid.setVgap(10);
@@ -88,12 +78,7 @@ public class UserSelectorPanel extends StackPane {
     }
 
     public void addUser(User user) {
+        userService.add(user);
         addItem(new UserMenuItem(user));
-        try {
-            userService.add(user);
-        } catch (IOException e) {
-            System.out.println(String.format("saving %s failed", user));
-            e.printStackTrace();
-        }
     }
 }

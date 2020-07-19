@@ -57,10 +57,7 @@ public class MainPanel extends Pane {
 
         MenuItem playItem = new MenuItem("Play");
         playItem.setOnMousePressed(event -> {
-//            board = Constants.getDefaultBoard();
-            board = new GameBoard(selectMap, selectedUsers);
-            System.out.println(Arrays.deepToString(selectMap.getData()));;
-//            board.createBomberMans(selectedUsers);
+            board = new GameBoard(selectMap, selectedUsers, userService);
             board.load();
             board.setMainPanel(this);
             board.setScene(scene);
@@ -111,7 +108,7 @@ public class MainPanel extends Pane {
     private UserSelectorPanel createPlayerSelectionMenu() {
 
         if (users == null) {
-            users = userService.list();
+            users = userService.readAll();
         }
         UserSelectorPanel userSelector = new UserSelectorPanel(userService, gameMenu, selectedUsers);
         for (User user : users) {

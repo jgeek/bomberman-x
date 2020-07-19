@@ -12,10 +12,11 @@ public class User implements Serializable {
     private int games;
     private int victories;
     private int defeats;
+    private int draws;
 
     public User(String name) {
         this.name = name;
-        id = ID_GENERATOR++;
+//        id = ID_GENERATOR++;
     }
 
     @Override
@@ -32,6 +33,26 @@ public class User implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return id == user.id;
+    }
+
+    public void addScore(int score) {
+        this.score += score;
+    }
+
+    public void incVictories() {
+        this.victories += 1;
+    }
+
+    public void incDefeats() {
+        this.defeats += 1;
+    }
+
+    public void incDraws() {
+        this.draws += 1;
+    }
+
+    public void incGames() {
+        this.games += 1;
     }
 
     @Override
@@ -83,7 +104,17 @@ public class User implements Serializable {
         return defeats;
     }
 
+    public int getDraws() {
+        return draws;
+    }
+
+    public void setDraws(int draws) {
+        this.draws = draws;
+    }
+
     public void setDefeats(int defeats) {
+
+
         this.defeats = defeats;
     }
 }

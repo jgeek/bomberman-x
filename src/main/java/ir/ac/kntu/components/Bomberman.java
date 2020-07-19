@@ -404,4 +404,8 @@ public class Bomberman extends ImageView {
     public void setAlive(boolean alive) {
         this.alive = alive;
     }
+
+    public User getUser() {
+        return user;
+    }
 }

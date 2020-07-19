@@ -9,6 +9,7 @@ import ir.ac.kntu.components.tiles.*;
 import ir.ac.kntu.data.GameMap;
 import ir.ac.kntu.data.User;
 import ir.ac.kntu.navigation.MainPanel;
+import ir.ac.kntu.service.UserService;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -37,6 +38,7 @@ public class GameBoard extends Pane {
     public enum GameStop {
         TIMEOUT, WINNER, NONE;
 
+
     }
 
     private MainPanel mainPanel;
@@ -55,12 +57,15 @@ public class GameBoard extends Pane {
     private boolean playing;
     private VBox statusBar;
     private Scene scene;
+    private UserService userService;
     private List<User> users;
 
 
-    public GameBoard(GameMap map, List<User> users) {
+    public GameBoard(GameMap map, List<User> users, UserService userService) {
         this(map.getName(), map.getData());
+        this.userService = userService;
         this.users = users;
+        System.out.println(String.format("starting the game with %s users", users.size()));
     }
 
     public GameBoard(String name, char[][] data) {
@@ -103,12 +108,9 @@ public class GameBoard extends Pane {
 
         // button get focus and consumes the key actions
 //        Button back = new Button("Main Menu");
-        back.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                stopGame(GameStop.NONE);
-                scene.setRoot(mainPanel);
-            }
+        back.setOnMouseClicked(event -> {
+            stopGame(GameStop.NONE);
+            scene.setRoot(mainPanel);
         });
         statusBar.getChildren().add(back);
         getChildren().add(statusBar);
@@ -188,7 +190,7 @@ public class GameBoard extends Pane {
             return;
         }
 
-        GameOverPanel panel = new GameOverPanel(scene, mainPanel, gameStop, bombermans);
+        GameOverPanel panel = new GameOverPanel(userService, scene, mainPanel, gameStop, bombermans);
         getChildren().add(panel);
 //        Stage stage = new Stage();
 //        Scene newScene = new Scene(panel);

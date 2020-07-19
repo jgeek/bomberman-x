@@ -14,58 +14,25 @@ import javafx.stage.WindowEvent;
 
 public class Starter extends Application {
 
-    private GameBoard board;
-    private Scene scene;
-
     public static void main(String[] args) {
         launch(args);
     }
 
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
 
-        if (false) {
-
-            board = Constants.getDefaultBoard();
-            board.load();
-            board.startGame();
-            ;
-            Group root = new Group();
-            MainPanel mainPanel = new MainPanel();
-            root.getChildren().add(board);
-            scene = new Scene(root/*, Constants.MAIN_PANEL_WIDTH, Constants.MAIN_PANEL_HEIGHT, Color.rgb(240, 240, 240)*/);
-//        scene = new Scene(mainPanel/*, Constants.MAIN_PANEL_WIDTH, Constants.MAIN_PANEL_HEIGHT, Color.rgb(240, 240, 240)*/);
+        MainPanel mainPanel = null;
+        try {
+            mainPanel = new MainPanel();
+            Scene scene = new Scene(mainPanel/*, Constants.MAIN_PANEL_WIDTH, Constants.MAIN_PANEL_HEIGHT, Color.rgb(240, 240, 240)*/);
             mainPanel.setScene(scene);
-//        Group root = new Group(board);
-            scene.setOnKeyPressed(new InputEventHandler(board));
-            stage.initStyle(StageStyle.UTILITY);
+            // stage.initStyle(StageStyle.UTILITY);
             stage.setTitle("Bomberman");
             stage.setScene(scene);
-            stage.setAlwaysOnTop(true);
-//        stage.setMaxHeight(Constants.MAIN_PANEL_WIDTH);
-//        stage.setMaxWidth(Constants.MAIN_PANEL_HEIGHT);
+            stage.setOnCloseRequest(event -> System.exit(0));
             stage.show();
-
-            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                public void handle(WindowEvent event) {
-                    System.exit(0);
-                }
-            });
-        } else {
-            MainPanel mainPanel = new MainPanel();
-            scene = new Scene(mainPanel/*, Constants.MAIN_PANEL_WIDTH, Constants.MAIN_PANEL_HEIGHT, Color.rgb(240, 240, 240)*/);
-            mainPanel.setScene(scene);
-//            stage.initStyle(StageStyle.UTILITY);
-            stage.setTitle("Bomberman");
-            stage.setScene(scene);
-            stage.show();
-
-            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                public void handle(WindowEvent event) {
-                    System.exit(0);
-                }
-            });
+        } catch (Exception e) {
+            System.out.println("system error happened");
+            e.printStackTrace();
         }
-
-
     }
 }

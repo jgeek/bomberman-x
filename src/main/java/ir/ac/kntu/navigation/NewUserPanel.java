@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -22,8 +24,12 @@ import java.util.List;
 
 public class NewUserPanel extends StackPane {
 
+    private final TextField text;
+    private final UserSelectorPanel parent;
+
     public NewUserPanel(UserSelectorPanel parent) {
 
+        this.parent = parent;
         Rectangle background = new Rectangle(300, 150);
         background.setOpacity(.4);
         DropShadow shadow = new DropShadow(7, 5, 0, Color.BLACK);
@@ -38,26 +44,18 @@ public class NewUserPanel extends StackPane {
 
         Label label = new Label("Name:");
         label.setTextFill(Color.WHITE);
-        TextField text = new TextField("");
+        text = new TextField("");
         text.setPrefWidth(200);
 
         Button submit = new Button("Submit");
+        submit.setDefaultButton(true);
         submit.setOnMousePressed(event -> {
-            if (text.getText().length() == 0) {
-                System.out.println("enter the name");
-                return;
-            }
-            User user = new User(text.getText());
-            parent.addUser(user);
-//            userLovers.forEach(ul -> ul.hello(user));
-            setVisible(false);
-//            parent.setVisible(true);
+            save();
         });
 
         Button cancel = new Button("Cancel");
         cancel.setOnMousePressed(event -> {
             setVisible(false);
-//            parent.setVisible(true);
         });
 
         grid.add(label, 0, 0, 1, 1);
@@ -66,6 +64,26 @@ public class NewUserPanel extends StackPane {
         grid.add(submit, 1, 1, 1, 1);
 
         getChildren().addAll(background, grid);
+        text.requestFocus();
 
+        setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.ENTER) {
+                    save();
+                }
+            }
+        });
+
+    }
+
+    private void save() {
+        if (text.getText().length() == 0) {
+            System.out.println("enter the name");
+            return;
+        }
+        User user = new User(text.getText());
+        parent.addUser(user);
+        setVisible(false);
     }
 }
