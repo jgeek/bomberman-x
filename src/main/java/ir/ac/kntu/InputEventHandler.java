@@ -40,7 +40,7 @@ public class InputEventHandler implements EventHandler<KeyEvent> {
             return;
         }
         if (!bomberman.isAlive()) {
-            System.out.println(String.format("Hey %s!Sorry, your're dead", bomberman.getSystemName()));
+            System.out.println(String.format("Hey %s! Sorry, your're dead", bomberman.getUsername()));
             return;
         }
         Bomberman.Direction direction = keyMapper.get(event.getCode());

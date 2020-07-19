@@ -7,6 +7,7 @@ import ir.ac.kntu.actions.KeyDirection;
 import ir.ac.kntu.actions.UserAction;
 import ir.ac.kntu.components.gifts.Gift;
 import ir.ac.kntu.components.tiles.Tile;
+import ir.ac.kntu.data.User;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -23,6 +24,7 @@ public class Bomberman extends ImageView {
     private boolean bombBoosted;
     private PlayerBoardSection scoreBoard;
     private int score;
+    private User user;
 
     public void setScoreBoard(PlayerBoardSection scoreBoard) {
         this.scoreBoard = scoreBoard;
@@ -214,7 +216,7 @@ public class Bomberman extends ImageView {
 
     private boolean checkAlivenessAndGame() {
         if (!alive) {
-            System.out.println("I'm dead " + systemName);
+            System.out.println("I'm dead " + username);
             return false;
         }
         if (!board.isPlaying()) {
@@ -322,6 +324,8 @@ public class Bomberman extends ImageView {
     public void killMe() {
         alive = false;
         board.removeBomberMan(this);
+        currentImage = systemName.rightMoving;
+        scoreBoard.setImage(currentImage);
     }
 
     public void updateScore(int score) {
@@ -391,5 +395,13 @@ public class Bomberman extends ImageView {
 
     public int getScore() {
         return score;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 }

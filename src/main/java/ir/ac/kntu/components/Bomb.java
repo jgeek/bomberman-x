@@ -47,6 +47,7 @@ public class Bomb extends ImageView implements Positionable {
 
 
         Utils.runLater(() -> {
+            List<Bomberman> killed = new ArrayList<>();
             for (Tile tile : toExplodeTiles) {
                 if (tile instanceof Block) {
                     if (!tile.isCanPassThrow()) {
@@ -75,21 +76,22 @@ public class Bomb extends ImageView implements Positionable {
                     }
                     tile.setInFire(true);
                 }
-                List<Bomberman> killed = new ArrayList<>();
                 for (Bomberman bomberman : board.getBombermans()) {
                     if (bomberman.isAlive() && bomberman.getRow() == tile.getRow() && bomberman.getCol() == tile.getCol()) {
                         killed.add(bomberman);
+                        bomberman.setAlive(false);
                     }
                 }
-                killed.forEach(bomberman -> {
-                    bomberman.killMe();
-                    if (!this.bomberman.getSystemName().equals(Bomberman.SYSTEM_NAMES.SYSTEM) && !this.bomberman.getSystemName().equals(bomberman.getSystemName())) {
-                        this.bomberman.updateScore(1);
-                        this.bomberman.updateScore(bomberman.getScore());
-                    }
-                    System.out.println(String.format("bomberman %s is killed by %s", bomberman.getSystemName(), this.bomberman.getSystemName()));
-                });
             }
+            killed.forEach(bomberman -> {
+                bomberman.killMe();
+                if (!this.bomberman.getSystemName().equals(Bomberman.SYSTEM_NAMES.SYSTEM) &&
+                        !this.bomberman.getSystemName().equals(bomberman.getSystemName()) && this.bomberman.isAlive()) {
+                    this.bomberman.updateScore(1);
+                    this.bomberman.updateScore(bomberman.getScore());
+                }
+                System.out.println(String.format("%s is killed by %s", bomberman.getUsername(), this.bomberman.getUsername()));
+            });
             Utils.runLater(() -> {
                 for (Tile t : toExplodeTiles) {
                     if (t instanceof Block) {

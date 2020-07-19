@@ -11,6 +11,7 @@ import ir.ac.kntu.data.User;
 import ir.ac.kntu.navigation.MainPanel;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -97,6 +98,9 @@ public class GameBoard extends Pane {
         bombermans.forEach(b -> statusBar.getChildren().add(new PlayerBoardSection(b)));
         Label back = new Label("Main Menu");
         back.setStyle("-fx-border-color:black; -fx-background-color: white;-fx-label-padding: 5");
+        back.setPrefWidth(200);
+        back.setAlignment(Pos.CENTER);
+
         // button get focus and consumes the key actions
 //        Button back = new Button("Main Menu");
         back.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -184,19 +188,21 @@ public class GameBoard extends Pane {
             return;
         }
 
-        Stage stage = new Stage();
-        GameOverPanel panel = new GameOverPanel(stage, scene, mainPanel, gameStop, bombermans);
-        Scene newScene = new Scene(panel);
-        stage.setScene(newScene);
-        stage.initStyle(StageStyle.UTILITY);
+        GameOverPanel panel = new GameOverPanel(scene, mainPanel, gameStop, bombermans);
+        getChildren().add(panel);
+//        Stage stage = new Stage();
+//        Scene newScene = new Scene(panel);
 
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            public void handle(WindowEvent event) {
-                scene.setRoot(mainPanel);
-                stage.close();
-            }
-        });
-        stage.show();
+//        stage.setScene(newScene);
+//        stage.initStyle(StageStyle.UTILITY);
+//
+//        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+//            public void handle(WindowEvent event) {
+//                scene.setRoot(mainPanel);
+//                stage.close();
+//            }
+//        });
+//        stage.show();
     }
 
     private void disappearAfterAwhile(Tile tile) {
@@ -259,7 +265,7 @@ public class GameBoard extends Pane {
         getChildren().remove(node);
     }
 
-    public void removeBomberMan(Bomberman bomberman) {
+    public synchronized void removeBomberMan(Bomberman bomberman) {
 //        bombermans.remove(bomberman);
         getChildren().remove(bomberman);
         long liveMans = bombermans.stream().filter(Bomberman::isAlive).count();
@@ -280,6 +286,7 @@ public class GameBoard extends Pane {
             Tile tile = findRandomFreeTile();
             Bomberman bomberman = new Bomberman(this, user.getName(), systemNames[i],
                     tile.getCol() * Constants.TILE_SIZE, tile.getRow() * Constants.TILE_SIZE, tile.getRow(), tile.getCol());
+            bomberman.setUser(user);
             bombermans.add(bomberman);
         }
         getChildren().addAll(bombermans);

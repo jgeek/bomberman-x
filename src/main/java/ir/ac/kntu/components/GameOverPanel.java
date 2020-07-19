@@ -3,22 +3,27 @@ package ir.ac.kntu.components;
 import ir.ac.kntu.Constants;
 import ir.ac.kntu.navigation.MainPanel;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GameOverPanel extends VBox {
+public class GameOverPanel extends StackPane {
 
-    public GameOverPanel(Stage newStage, Scene scene, MainPanel mainPanel, GameBoard.GameStop gameStop, List<Bomberman> bombermans) {
+    public GameOverPanel(Scene scene, MainPanel mainPanel, GameBoard.GameStop gameStop, List<Bomberman> bombermans) {
 
-        setPrefSize(600, 250);
+//        setPrefSize(600, 250);
         List<Bomberman> lives = bombermans.stream().filter(Bomberman::isAlive).collect(Collectors.toList());
         if (lives.size() > 0) {
             switch (gameStop) {
@@ -40,20 +45,26 @@ public class GameOverPanel extends VBox {
             bombermans.forEach(bm -> bm.updateScore(-bm.getScore()));
         }
 
-        HBox mans = new HBox();
-        bombermans.forEach(b -> mans.getChildren().add(new PlayerBoardSection(b)));
-//        mans.setPrefSize(600, 300);
+        Rectangle background = new Rectangle(800, 200);
+        background.setOpacity(.9);
+        background.setFill(Color.rgb(233, 237, 232));
 
-        Button button = new Button("Back to main manu");
-        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                scene.setRoot(mainPanel);
-                newStage.close();
-            }
+        HBox hBox = new HBox();
+        bombermans.forEach(b -> hBox.getChildren().add(new PlayerBoardSection(b)));
+
+        Button button = new Button("Main Menu");
+        button.setOnMouseClicked(event -> {
+            scene.setRoot(mainPanel);
         });
 
-        setSpacing(20);
-        getChildren().addAll(mans, button);
+        VBox box = new VBox();
+        box.setAlignment(Pos.TOP_CENTER);
+        box.setSpacing(0);
+        box.getChildren().addAll(hBox, button);
+
+        getChildren().addAll(background, box);
+        setAlignment(Pos.CENTER);
+        setTranslateX(100);
+        setTranslateY(200);
     }
 }
