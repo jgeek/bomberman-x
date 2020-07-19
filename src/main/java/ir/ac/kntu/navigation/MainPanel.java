@@ -4,6 +4,7 @@ import ir.ac.kntu.Constants;
 import ir.ac.kntu.InputEventHandler;
 import ir.ac.kntu.components.Bomberman;
 import ir.ac.kntu.components.GameBoard;
+import ir.ac.kntu.components.tiles.Tile;
 import ir.ac.kntu.data.GameMap;
 import ir.ac.kntu.data.User;
 import ir.ac.kntu.service.MapProvider;
@@ -13,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainPanel extends Pane {
@@ -55,10 +57,12 @@ public class MainPanel extends Pane {
 
         MenuItem playItem = new MenuItem("Play");
         playItem.setOnMousePressed(event -> {
-            board = Constants.getDefaultBoard();
-            board = new GameBoard(selectMap.getName(), selectMap.getData());
-            board.setMainPanel(this);
+//            board = Constants.getDefaultBoard();
+            board = new GameBoard(selectMap, selectedUsers);
+            System.out.println(Arrays.deepToString(selectMap.getData()));;
+//            board.createBomberMans(selectedUsers);
             board.load();
+            board.setMainPanel(this);
             board.setScene(scene);
             HBox box = new HBox();
             scene.setRoot(box);

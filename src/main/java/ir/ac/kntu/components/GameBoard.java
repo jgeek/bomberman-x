@@ -6,6 +6,8 @@ import ir.ac.kntu.components.gifts.BombAdder;
 import ir.ac.kntu.components.gifts.BombBooster;
 import ir.ac.kntu.components.gifts.Gift;
 import ir.ac.kntu.components.tiles.*;
+import ir.ac.kntu.data.GameMap;
+import ir.ac.kntu.data.User;
 import ir.ac.kntu.navigation.MainPanel;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -33,6 +35,7 @@ public class GameBoard extends Pane {
 
     public enum GameStop {
         TIMEOUT, WINNER, NONE;
+
     }
 
     private MainPanel mainPanel;
@@ -51,7 +54,13 @@ public class GameBoard extends Pane {
     private boolean playing;
     private VBox statusBar;
     private Scene scene;
+    private List<User> users;
 
+
+    public GameBoard(GameMap map, List<User> users) {
+        this(map.getName(), map.getData());
+        this.users = users;
+    }
 
     public GameBoard(String name, char[][] data) {
         this.name = name;
@@ -76,7 +85,10 @@ public class GameBoard extends Pane {
                 getChildren().add(tile);
             }
         }
+        // add predefined bombermans
         getChildren().addAll(bombermans);
+        // add selected user as bomberman
+        createBomberMans(users);
 
         statusBar = new VBox();
         statusBar.setTranslateX(maxX + Constants.TILE_SIZE);
@@ -223,7 +235,7 @@ public class GameBoard extends Pane {
             case '2':
             case '3':
             case '4':
-                Bomberman bomberman = new Bomberman(this, "Bomberman" + c, Bomberman.SYSTEM_NAMES.from(c), col * Constants.TILE_SIZE, row * Constants.TILE_SIZE, row, col);
+                Bomberman bomberman = new Bomberman(this, "Bomberman " + c, Bomberman.SYSTEM_NAMES.from(c), col * Constants.TILE_SIZE, row * Constants.TILE_SIZE, row, col);
                 bombermans.add(bomberman);
                 return freeSpace;
             default:
@@ -232,7 +244,7 @@ public class GameBoard extends Pane {
     }
 
 
-    private Tile findRandomFreeTile() {
+    public Tile findRandomFreeTile() {
         List<Tile> freeTiles = tiles.stream().filter(t -> t.isCanPassThrow()).collect(Collectors.toList());
         int index = (new Random()).nextInt(freeTiles.size());
         return freeTiles.get(index);
@@ -254,6 +266,23 @@ public class GameBoard extends Pane {
         if (liveMans <= 1) {
             stopGame(GameStop.WINNER);
         }
+    }
+
+
+    public void createBomberMans(List<User> selectedUsers) {
+        if (selectedUsers.size() > 4) {
+            System.out.println("at most 4 players supported");
+            return;
+        }
+        Bomberman.SYSTEM_NAMES[] systemNames = Bomberman.SYSTEM_NAMES.values();
+        for (int i = 0; i < selectedUsers.size(); i++) {
+            User user = selectedUsers.get(i);
+            Tile tile = findRandomFreeTile();
+            Bomberman bomberman = new Bomberman(this, user.getName(), systemNames[i],
+                    tile.getCol() * Constants.TILE_SIZE, tile.getRow() * Constants.TILE_SIZE, tile.getRow(), tile.getCol());
+            bombermans.add(bomberman);
+        }
+        getChildren().addAll(bombermans);
     }
 
     public List<Bomberman> getBombermans() {
