@@ -207,8 +207,10 @@ public class GameBoard extends Pane {
             return;
         }
 
-        GameOverPanel panel = new GameOverPanel(userService, scene, mainPanel, gameStop, bombermans);
-        getChildren().add(panel);
+        Utils.runLater(() -> {
+            GameOverPanel panel = new GameOverPanel(userService, scene, mainPanel, gameStop, bombermans);
+            getChildren().add(panel);
+        }, 3000);
 //        Stage stage = new Stage();
 //        Scene newScene = new Scene(panel);
 
