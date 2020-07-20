@@ -200,6 +200,9 @@ public class GameBoard extends Pane {
     }
 
     public void stopGame(GameStop gameStop) {
+        if (playing == false) {
+            return;
+        }
         timers.forEach(Timer::cancel);
         playing = false;
         System.out.println("Game is over");
