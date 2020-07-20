@@ -20,7 +20,7 @@ public class UserService {
 
     public List<User> list() {
         if (users == null) {
-            readAll();
+            users = readAll();
         }
         return users;
 //        return Arrays.asList(new User("behnia"), new User("sepanta"), new User("mohammad"), new User("alireza"), new User("aria"),
@@ -84,12 +84,17 @@ public class UserService {
                 }
 //                db.createNewFile();
                 FileOutputStream oFile = new FileOutputStream(db, false);
+//                oFile.flush();
+//                oFile.close();
                 System.out.println("db is created");
-                return Collections.emptyList();
+                users = new ArrayList<>();
+                return users;
             } catch (Exception e2) {
                 System.out.println("could not create file " + Constants.USER_DB_FILE);
                 throw new RuntimeException(e2);
             }
+        } catch (EOFException eof) {
+            return users;
         } catch (Exception e) {
             System.out.println("could not load users from db");
             throw new RuntimeException(e);
