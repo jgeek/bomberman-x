@@ -27,7 +27,7 @@ public class Constants {
     public static final double MENU_ITEM_HEIGHT = 40;
     public static int EXPLOSION_REMAIN_TIME = 600;
     public static final int BOMB_BOOST_TIME = 15000;
-    public static final int GIFT_BOOST_INTERVAL = 15000;
+    public static final int GIFT_BOOST_INTERVAL = 5000;
     public static int TILE_SIZE = 60;
     public static String USER_DB_FILE = "/home/kargar/bomberman.db";
 //    public static String USER_DB_FILE = "/tmp/bomberman.db";

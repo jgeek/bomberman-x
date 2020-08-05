@@ -16,12 +16,12 @@ public class MenuHolder extends StackPane {
 
         Rectangle background = new Rectangle(400, 300);
         background.setOpacity(0.2);
-        DropShadow shadow = new DropShadow(7, 5, 0, Color.BLACK);
-        shadow.setSpread(0.8);
-        background.setEffect(shadow);
+//        DropShadow shadow = new DropShadow(7, 5, 0, Color.BLACK);
+//        shadow.setSpread(0.8);
+//        background.setEffect(shadow);
 
         vbox = new VBox();
-        vbox.setAlignment(Pos.TOP_RIGHT);
+        vbox.setAlignment(Pos.TOP_CENTER);
         vbox.setPadding(new Insets(85, 0, 0, 0));
         vbox.getChildren().addAll(items);
 

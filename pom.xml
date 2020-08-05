@@ -95,6 +95,8 @@
                     <archive>
                         <!-- <manifestFile>${   project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile> -->
                         <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>/</classpathPrefix>
                             <mainClass>ir.ac.kntu.Starter</mainClass>
                         </manifest>
                     </archive>

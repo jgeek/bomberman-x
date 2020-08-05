@@ -7,8 +7,10 @@ import ir.ac.kntu.components.HallOfFamesPanel;
 import ir.ac.kntu.data.GameMap;
 import ir.ac.kntu.data.User;
 import ir.ac.kntu.service.UserService;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
 import java.util.ArrayList;
@@ -133,15 +135,18 @@ public class MainPanel extends Pane {
 
         MenuHolder mapMenu = new MenuHolder();
         List<GameMap> maps = Constants.maps;
-        if (maps == null) {
+        if (maps.isEmpty()) {
             return mapMenu;
         }
         for (GameMap map : maps) {
             MapMenuItem item = new MapMenuItem(map);
-            item.setOnMousePressed(event -> {
-                MainPanel.this.selectMap = map;
-                MainPanel.this.mapMenu.setVisible(false);
-                MainPanel.this.gameMenu.setVisible(true);
+            item.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    MainPanel.this.selectMap = map;
+                    MainPanel.this.mapMenu.setVisible(false);
+                    MainPanel.this.gameMenu.setVisible(true);
+                }
             });
             mapMenu.addItem(item);
         }

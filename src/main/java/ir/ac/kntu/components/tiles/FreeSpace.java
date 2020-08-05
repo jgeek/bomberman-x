@@ -29,9 +29,9 @@ public class FreeSpace extends Tile {
         return true;
     }
 
-    public static FreeSpace fromTile(Tile tile) {
-        FreeSpace fs = new FreeSpace(tile.getRow(), tile.getCol(), tile.getWidth(), tile.getHeight(), tile.getTranslateX(), tile.getTranslateY());
-        fs.init();
-        return fs;
-    }
+//    public static FreeSpace fromTile(Tile tile) {
+//        FreeSpace fs = new FreeSpace(tile.getRow(), tile.getCol(), tile.getWidth(), tile.getHeight(), tile.getTranslateX(), tile.getTranslateY());
+//        fs.init();
+//        return fs;
+//    }
 }

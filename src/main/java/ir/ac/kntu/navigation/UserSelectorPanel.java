@@ -29,9 +29,9 @@ public class UserSelectorPanel extends StackPane {
         this.selectedUsers = selectedUsers;
         Rectangle background = new Rectangle(800, 600);
         background.setOpacity(0.2);
-        DropShadow shadow = new DropShadow(7, 5, 0, Color.BLACK);
-        shadow.setSpread(0.8);
-        background.setEffect(shadow);
+//        DropShadow shadow = new DropShadow(7, 5, 0, Color.BLACK);
+//        shadow.setSpread(0.8);
+//        background.setEffect(shadow);
 
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.TOP_CENTER);
