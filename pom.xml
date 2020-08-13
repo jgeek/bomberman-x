@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ir.ac.kntu</groupId>
-    <artifactId>hw5-fariborz-bomberman-starter</artifactId>
-    <name>hw5-fariborz-bomberman-starter</name>
+    <groupId>ir.javageek</groupId>
+    <artifactId>games</artifactId>
+    <name>bomberman-x</name>
     <version>1.0</version>
     <packaging>jar</packaging>
 
@@ -20,8 +20,7 @@
     </properties>
 
     <organization>
-        <!-- Used as the 'Vendor' for JNLP generation -->
-        <name>K. N. Toosi University of Technology</name>
+        <name>JavaGeek</name>
     </organization>
 
     <dependencies>
@@ -91,13 +90,13 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <finalName>fariborz-bomberman</finalName>
+                    <finalName>bomberman-x</finalName>
                     <archive>
                         <!-- <manifestFile>${   project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile> -->
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>/</classpathPrefix>
-                            <mainClass>ir.ac.kntu.Starter</mainClass>
+                            <mainClass>ir.javageek.Starter</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -111,7 +110,7 @@
                     <release>${maven.compiler.release}</release>
                     <jlinkImageName>hellofx</jlinkImageName>
                     <launcher>hellofx</launcher>
-                    <mainClass>ir.ac.kntu.Starter</mainClass>
+                    <mainClass>ir.javageek.Starter</mainClass>
                 </configuration>
             </plugin>
 
