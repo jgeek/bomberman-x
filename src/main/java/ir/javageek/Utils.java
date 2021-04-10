@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,9 +21,26 @@ public class Utils {
         return new Image(Objects.requireNonNull(Utils.class.getClassLoader().getResourceAsStream(name)));
     }
 
+    //https://en.it1352.com/article/9ffa0d8090e14708b73e927324582abf.html
+    // https://gist.github.com/ABuarque/b440d178c020f5b1add28dad8c3db856
     public static Media loadMedia(String name) {
-        return new Media(new File("/home/kargar/workspace/codes/bomberman-x/src/main/resources/assets/media/explosion1.mp3").toURI().toString());
+        return new Media(new File("/home/kargar/workspace/codes/bomberman-x/src/main/resources/assets/media/bomb1.wav").toURI().toString());
+//        try {
 //            return new Media(Objects.requireNonNull(Utils.class.getClassLoader().getResource(name).toURI().toString()));
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+    }
+
+    public static void playMedia(String name) {
+        Media media = Utils.loadMedia(name);
+        if (media != null) {
+            MediaPlayer mediaPlayer = new MediaPlayer(media);
+            System.out.println();
+            mediaPlayer.play();
+            mediaPlayer.dispose();
+        }
     }
 
     public static ImageView loadBomberManView(Bomberman.SYSTEM_NAMES name, Bomberman.Direction direction, Bomberman.State state) {

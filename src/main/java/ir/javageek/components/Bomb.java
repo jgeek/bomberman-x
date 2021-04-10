@@ -86,10 +86,7 @@ public class Bomb extends ImageView implements Positionable {
             }
 
             Utils.runLater(() -> {
-                MediaPlayer mediaPlayer = new MediaPlayer(Utils.loadMedia(Constants.EXPLOSION_SOUND));
-                System.out.println();
-                mediaPlayer.play();
-                mediaPlayer.dispose();
+                Utils.playMedia(Constants.EXPLOSION_SOUND);
             }, 100);
 
             killed.forEach(bomberman -> {

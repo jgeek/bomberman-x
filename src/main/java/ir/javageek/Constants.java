@@ -25,7 +25,7 @@ public class Constants {
     public static final double MAIN_PANEL_HEIGHT = 800;
     public static final double MENU_ITEM_WIDTH = 400;
     public static final double MENU_ITEM_HEIGHT = 40;
-    public static final String EXPLOSION_SOUND = "assets/media/explosion1.mp3";
+    public static final String EXPLOSION_SOUND = "assets/media/bomb1.wav";
     public static int EXPLOSION_REMAIN_TIME = 600;
     public static final int BOMB_BOOST_TIME = 15000;
     public static final int GIFT_BOOST_INTERVAL = 5000;
