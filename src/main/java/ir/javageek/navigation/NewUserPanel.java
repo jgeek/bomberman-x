@@ -70,7 +70,7 @@ public class NewUserPanel extends StackPane {
     }
 
     private void save() {
-        if (text.getText().length() == 0) {
+        if (text.getText().isEmpty()) {
             System.out.println("enter the name");
             return;
         }

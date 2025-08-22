@@ -2,11 +2,11 @@ package ir.javageek.components;
 
 public interface Positionable {
 
-    public int getRow();
+    int getRow();
 
-    public void setRow(int row);
+    void setRow(int row);
 
-    public int getCol();
+    int getCol();
 
-    public void setCol(int col);
+    void setCol(int col);
 }

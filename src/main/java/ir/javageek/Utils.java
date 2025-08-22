@@ -24,7 +24,8 @@ public class Utils {
     //https://en.it1352.com/article/9ffa0d8090e14708b73e927324582abf.html
     // https://gist.github.com/ABuarque/b440d178c020f5b1add28dad8c3db856
     public static Media loadMedia(String name) {
-        return new Media(new File("/home/kargar/workspace/codes/bomberman-x/src/main/resources/assets/media/bomb1.wav").toURI().toString());
+        var f = new File("/Users/moreka/workspace/codes/bomberman-x/src/main/resources/assets/media/bomb1.wav");
+        return new Media(f.toURI().toString());
 //        try {
 //            return new Media(Objects.requireNonNull(Utils.class.getClassLoader().getResource(name).toURI().toString()));
 //        } catch (URISyntaxException e) {
@@ -35,12 +36,13 @@ public class Utils {
 
     public static void playMedia(String name) {
         Media media = Utils.loadMedia(name);
-        if (media != null) {
-            MediaPlayer mediaPlayer = new MediaPlayer(media);
-            System.out.println();
-            mediaPlayer.play();
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        System.out.println();
+        mediaPlayer.play();
+        mediaPlayer.setOnEndOfMedia(() -> {
+            mediaPlayer.stop();
             mediaPlayer.dispose();
-        }
+        });
     }
 
     public static ImageView loadBomberManView(Bomberman.SYSTEM_NAMES name, Bomberman.Direction direction, Bomberman.State state) {

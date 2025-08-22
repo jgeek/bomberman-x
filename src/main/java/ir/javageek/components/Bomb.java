@@ -8,7 +8,6 @@ import ir.javageek.components.tiles.OneWay;
 import ir.javageek.components.tiles.Tile;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.media.MediaPlayer;
 
 import java.util.*;
 

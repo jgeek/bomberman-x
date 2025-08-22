@@ -28,10 +28,9 @@ public class Constants {
     public static final String EXPLOSION_SOUND = "assets/media/bomb1.wav";
     public static int EXPLOSION_REMAIN_TIME = 600;
     public static final int BOMB_BOOST_TIME = 15000;
-    public static final int GIFT_BOOST_INTERVAL = 5000;
+    public static final int GIFT_BOOST_INTERVAL = 1000;
     public static int TILE_SIZE = 60;
-    public static String USER_DB_FILE = "/home/kargar/bomberman.db";
-//    public static String USER_DB_FILE = "/tmp/bomberman.db";
+    public static String USER_DB_FILE = "/tmp/bomberman.db";
 
     public static Image FREE_SPACE_IMAGE = Utils.loadImage("assets/map/normal.png");
     public static Image BLOCK_IMAGE = Utils.loadImage("assets/map/block.png");

@@ -93,16 +93,16 @@ public class Bomberman extends ImageView {
             return name;
         }
 
-        Image downMoving;
-        Image downStanding;
-        Image leftMoving;
-        Image leftStanding;
-        Image rightMoving;
-        Image rightStanding;
-        Image upMoving;
-        Image upStanding;
-        String name;
-        List<UserAction> userActions;
+        final Image downMoving;
+        final Image downStanding;
+        final Image leftMoving;
+        final Image leftStanding;
+        final Image rightMoving;
+        final Image rightStanding;
+        final Image upMoving;
+        final Image upStanding;
+        final String name;
+        final List<UserAction> userActions;
 
 
         public static SYSTEM_NAMES from(char c) {
