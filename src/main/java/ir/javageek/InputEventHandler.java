@@ -20,9 +20,9 @@ public class InputEventHandler implements EventHandler<KeyEvent> {
         this.board = board;
         for (Bomberman bomberman : board.getBombermans()) {
             bomberman.getSystemName().getUserActions().forEach(userAction -> {
-                dispatcher.put(userAction.keyCode, bomberman);
+                dispatcher.put(userAction.getKeyCode(), bomberman);
                 if (userAction.isMove()) {
-                    keyMapper.put(userAction.keyCode, ((KeyDirection) userAction).direction);
+                    keyMapper.put(userAction.getKeyCode(), ((KeyDirection) userAction).direction);
                 }
             });
         }
@@ -32,7 +32,7 @@ public class InputEventHandler implements EventHandler<KeyEvent> {
     public void handle(KeyEvent event) {
         Bomberman bomberman = dispatcher.get(event.getCode());
         if (bomberman == null) {
-            System.out.println(String.format("key %s is not defined", event.getCode()));
+            System.out.printf("key %s is not defined%n", event.getCode());
             return;
         }
         if (!board.isPlaying()) {
@@ -40,14 +40,17 @@ public class InputEventHandler implements EventHandler<KeyEvent> {
             return;
         }
         if (!bomberman.isAlive()) {
-            System.out.println(String.format("Hey %s! Sorry, your're dead", bomberman.getUsername()));
+            System.out.printf("Hey %s! Sorry, your're dead%n", bomberman.getUsername());
             return;
         }
         Bomberman.Direction direction = keyMapper.get(event.getCode());
         if (direction == null) {
             // it's a bomb action
-            bomberman.insertBomb();
-
+            if (isThrowKey(event) && !bomberman.getSystemName().equals(Bomberman.SYSTEM_NAMES.SYSTEM)) {
+                bomberman.throwBomb();
+            }else {
+                bomberman.insertBomb();
+            }
         } else {
             switch (direction) {
                 case UP:
@@ -60,5 +63,9 @@ public class InputEventHandler implements EventHandler<KeyEvent> {
                     break;
             }
         }
+    }
+
+    private static boolean isThrowKey(KeyEvent event) {
+        return event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.COMMAND;
     }
 }

@@ -49,6 +49,9 @@ public class Bomb extends ImageView implements Positionable {
         Utils.runLater(() -> {
             List<Bomberman> killed = new ArrayList<>();
             for (Tile tile : toExplodeTiles) {
+                if (tile == null) {
+                    continue;
+                }
                 if (tile instanceof Block) {
                     if (!tile.isCanPassThrow()) {
                         // hide block main layer
@@ -124,6 +127,15 @@ public class Bomb extends ImageView implements Positionable {
                     return tile;
                 }
                 return tile.isExplodable() ? tile : null;
+            }
+        }
+        return null;
+    }
+
+    public Tile getTileAt(int i, int j) {
+        for (Tile tile : board.getTiles()) {
+            if (tile.getRow() == i && tile.getCol() == j) {
+                return tile;
             }
         }
         return null;

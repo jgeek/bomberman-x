@@ -4,6 +4,7 @@ import ir.javageek.Constants;
 import ir.javageek.Utils;
 import ir.javageek.actions.InsertBomb;
 import ir.javageek.actions.KeyDirection;
+import ir.javageek.actions.ThrowBomb;
 import ir.javageek.actions.UserAction;
 import ir.javageek.components.gifts.Gift;
 import ir.javageek.components.tiles.Tile;
@@ -65,9 +66,9 @@ public class Bomberman extends ImageView {
     public enum SYSTEM_NAMES {
 
         WHITE("white", new KeyDirection(KeyCode.UP, Direction.UP), new KeyDirection(KeyCode.DOWN, Direction.DOWN),
-                new KeyDirection(KeyCode.LEFT, Direction.LEFT), new KeyDirection(KeyCode.RIGHT, Direction.RIGHT), new InsertBomb(KeyCode.SPACE)),
+                new KeyDirection(KeyCode.LEFT, Direction.LEFT), new KeyDirection(KeyCode.RIGHT, Direction.RIGHT), new InsertBomb(KeyCode.SPACE), new ThrowBomb(KeyCode.ENTER)),
         BLACK("black", new KeyDirection(KeyCode.W, Direction.UP), new KeyDirection(KeyCode.S, Direction.DOWN),
-                new KeyDirection(KeyCode.A, Direction.LEFT), new KeyDirection(KeyCode.D, Direction.RIGHT), new InsertBomb(KeyCode.ALT)),
+                new KeyDirection(KeyCode.A, Direction.LEFT), new KeyDirection(KeyCode.D, Direction.RIGHT), new InsertBomb(KeyCode.ALT), new ThrowBomb(KeyCode.COMMAND)),
         RED("red", new KeyDirection(KeyCode.Y, Direction.UP), new KeyDirection(KeyCode.H, Direction.DOWN),
                 new KeyDirection(KeyCode.G, Direction.LEFT), new KeyDirection(KeyCode.J, Direction.RIGHT), new InsertBomb(KeyCode.K)),
         YELLOW("yellow", new KeyDirection(KeyCode.DIGIT5, Direction.UP), new KeyDirection(KeyCode.DIGIT2, Direction.DOWN),
@@ -287,14 +288,60 @@ public class Bomberman extends ImageView {
 
 
     public void insertBomb() {
-        if (bombs.size() >= maxBombs) {
-            System.out.println(String.format("max bombs %s, current bombs %s", maxBombs, bombs.size()));
-            return;
-        }
+        if (exceedsBombCount()) return;
         Bomb bomb = new Bomb(board, this, getTranslateX(), getTranslateY(), row, col, Constants.BOMB_DELAY,
                 bombBoosted ? Constants.BOMB_BOOSTED_EXPLOSION_RANGE : Constants.BOMB_EXPLOSION_RANGE);
         bombs.add(bomb);
         board.getChildren().add(bomb);
+        startBomb(bomb);
+    }
+
+    private boolean exceedsBombCount() {
+        if (bombs.size() >= maxBombs) {
+            System.out.println(String.format("max bombs %s, current bombs %s", maxBombs, bombs.size()));
+            return true;
+        }
+        return false;
+    }
+
+    public void throwBomb() {
+        if (exceedsBombCount()) return;
+        Bomb bomb = null;
+        // base on bomberman direction it should set the bomb position
+        double bombX = getTranslateX();
+        double bombY = getTranslateY();
+        var d = 300;
+        System.out.println("distance:" + Constants.BOMB_THROW_DISTANCE);
+        if (currentImage == systemName.upMoving || currentImage == systemName.upStanding) {
+            bombY -= d;
+            bomb = new Bomb(board, this, bombX, bombY, row - 5, col, Constants.BOMB_DELAY,
+                    bombBoosted ? Constants.BOMB_BOOSTED_EXPLOSION_RANGE : Constants.BOMB_EXPLOSION_RANGE);
+        } else if (currentImage == systemName.downMoving || currentImage == systemName.downStanding) {
+            bombY += d;
+            bomb = new Bomb(board, this, bombX, bombY, row + 5, col, Constants.BOMB_DELAY,
+                    bombBoosted ? Constants.BOMB_BOOSTED_EXPLOSION_RANGE : Constants.BOMB_EXPLOSION_RANGE);
+        } else if (currentImage == systemName.leftMoving || currentImage == systemName.leftStanding) {
+            bombX -= d;
+            bomb = new Bomb(board, this, bombX, bombY, row, col - 5, Constants.BOMB_DELAY,
+                    bombBoosted ? Constants.BOMB_BOOSTED_EXPLOSION_RANGE : Constants.BOMB_EXPLOSION_RANGE);
+        } else if (currentImage == systemName.rightMoving || currentImage == systemName.rightStanding) {
+            bombX -= d;
+            bomb = new Bomb(board, this, bombX, bombY, row, col + 5, Constants.BOMB_DELAY,
+                    bombBoosted ? Constants.BOMB_BOOSTED_EXPLOSION_RANGE : Constants.BOMB_EXPLOSION_RANGE);
+        }
+
+        // print bomberman position
+        System.out.println("bomber man position" + getTranslateX() + " " + getTranslateY());
+
+        System.out.println("throw bomb at " + bombX + "," + bombY + " by " + username);
+
+        bombs.add(bomb);
+        // find the tile at bomb row and col and add bomb to it's children
+        Tile tileAt = bomb.getTileAt(row, col);
+        tileAt.getChildren().add(bomb);
+        board.getChildren().add(bomb);
+        // simulate throwing bomb in the board
+
         startBomb(bomb);
     }
 
