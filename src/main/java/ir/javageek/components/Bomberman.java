@@ -338,6 +338,10 @@ public class Bomberman extends ImageView {
         bombs.add(bomb);
         // find the tile at bomb row and col and add bomb to it's children
         Tile tileAt = bomb.getTileAt(row, col);
+        if (tileAt == null) {
+            System.out.println("No tile found at row " + row + " col " + col);
+            return;
+        }
         tileAt.getChildren().add(bomb);
         board.getChildren().add(bomb);
         // simulate throwing bomb in the board
