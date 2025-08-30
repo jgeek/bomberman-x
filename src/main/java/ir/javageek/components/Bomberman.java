@@ -325,7 +325,7 @@ public class Bomberman extends ImageView {
             bomb = new Bomb(board, this, bombX, bombY, row, col - 5, Constants.BOMB_DELAY,
                     bombBoosted ? Constants.BOMB_BOOSTED_EXPLOSION_RANGE : Constants.BOMB_EXPLOSION_RANGE);
         } else if (currentImage == systemName.rightMoving || currentImage == systemName.rightStanding) {
-            bombX -= d;
+            bombX += d;
             bomb = new Bomb(board, this, bombX, bombY, row, col + 5, Constants.BOMB_DELAY,
                     bombBoosted ? Constants.BOMB_BOOSTED_EXPLOSION_RANGE : Constants.BOMB_EXPLOSION_RANGE);
         }
