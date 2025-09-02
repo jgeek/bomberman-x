@@ -8,13 +8,17 @@ import javafx.scene.input.KeyEvent;
 import javafx.event.EventHandler;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class InputEventHandler implements EventHandler<KeyEvent> {
 
     private final GameBoard board;
     Map<KeyCode, Bomberman> dispatcher = new HashMap<>();
     private final Map<KeyCode, Bomberman.Direction> keyMapper = new HashMap<>();
+    // Track pressed directions for each Bomberman
+    private final Map<Bomberman, Set<Bomberman.Direction>> pressedDirections = new HashMap<>();
 
     public InputEventHandler(GameBoard board) {
         this.board = board;
@@ -25,6 +29,7 @@ public class InputEventHandler implements EventHandler<KeyEvent> {
                     keyMapper.put(userAction.getKeyCode(), ((KeyDirection) userAction).direction);
                 }
             });
+            pressedDirections.put(bomberman, new HashSet<>());
         }
     }
 
@@ -48,21 +53,20 @@ public class InputEventHandler implements EventHandler<KeyEvent> {
             // it's a bomb action
             if (isThrowKey(event) && !bomberman.getSystemName().equals(Bomberman.SYSTEM_NAMES.SYSTEM)) {
                 bomberman.throwBomb();
-            }else {
+            } else {
                 bomberman.insertBomb();
             }
         } else {
-            switch (direction) {
-                case UP:
-                case DOWN:
-                    bomberman.moveY(direction);
-                    break;
-                case LEFT:
-                case RIGHT:
-                    bomberman.moveX(direction);
-                    break;
+            if (event.getEventType() == KeyEvent.KEY_PRESSED) {
+                pressedDirections.get(bomberman).add(direction);
+            } else if (event.getEventType() == KeyEvent.KEY_RELEASED) {
+                pressedDirections.get(bomberman).remove(direction);
             }
         }
+    }
+
+    public Set<Bomberman.Direction> getPressedDirections(Bomberman bomberman) {
+        return pressedDirections.getOrDefault(bomberman, new HashSet<>());
     }
 
     private static boolean isThrowKey(KeyEvent event) {

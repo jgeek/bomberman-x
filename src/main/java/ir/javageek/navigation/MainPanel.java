@@ -76,14 +76,10 @@ public class MainPanel extends Pane {
             board.setScene(scene);
             HBox box = new HBox();
             scene.setRoot(box);
-            scene.setOnKeyPressed(new InputEventHandler(board));
-
-//            scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<Event>() {
-//                @Override
-//                public void handle(Event event) {
-//                    System.out.println(event);
-//                }
-//            });
+            InputEventHandler inputHandler = new InputEventHandler(board);
+            scene.setOnKeyPressed(inputHandler);
+            scene.setOnKeyReleased(inputHandler);
+            board.setInputEventHandler(inputHandler);
             box.getChildren().add(board);
             board.startGame();
         });

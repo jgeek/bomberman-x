@@ -1,6 +1,7 @@
 package ir.javageek.components;
 
 import ir.javageek.Constants;
+import ir.javageek.InputEventHandler;
 import ir.javageek.Utils;
 import ir.javageek.components.gifts.BombAdder;
 import ir.javageek.components.gifts.BombBooster;
@@ -10,6 +11,7 @@ import ir.javageek.data.GameMap;
 import ir.javageek.data.User;
 import ir.javageek.navigation.MainPanel;
 import ir.javageek.service.UserService;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -52,6 +54,12 @@ public class GameBoard extends Pane {
     private Scene scene;
     private UserService userService;
     private List<User> users;
+    private InputEventHandler inputEventHandler;
+    private AnimationTimer movementTimer;
+
+    // Add lastMoveTime map to throttle movement
+    private final Map<Bomberman, Long> lastMoveTime = new HashMap<>();
+    private static final long MOVE_DELAY_MS = 100; // 100ms between moves
 
 
     public GameBoard(GameMap map, List<User> users, UserService userService) {
@@ -129,15 +137,44 @@ public class GameBoard extends Pane {
 
     }
 
+    public void setInputEventHandler(InputEventHandler handler) {
+        this.inputEventHandler = handler;
+    }
+
     public void startGame() {
-        Timer start = new Timer();
-        start.schedule(new TimerTask() {
+        playing = true;
+        // StartTimers
+        startTimers();
+        // Start movement timer for continuous movement
+        movementTimer = new AnimationTimer() {
             @Override
-            public void run() {
-                playing = true;
-                startTimers();
+            public void handle(long now) {
+                if (!playing || inputEventHandler == null) return;
+                long currentTime = System.currentTimeMillis();
+                for (Bomberman bomberman : bombermans) {
+                    Set<Bomberman.Direction> dirs = inputEventHandler.getPressedDirections(bomberman);
+                    if (!dirs.isEmpty()) {
+                        Long last = lastMoveTime.getOrDefault(bomberman, 0L);
+                        if (currentTime - last >= MOVE_DELAY_MS) {
+                            for (Bomberman.Direction dir : dirs) {
+                                switch (dir) {
+                                    case UP:
+                                    case DOWN:
+                                        bomberman.moveY(dir);
+                                        break;
+                                    case LEFT:
+                                    case RIGHT:
+                                        bomberman.moveX(dir);
+                                        break;
+                                }
+                            }
+                            lastMoveTime.put(bomberman, currentTime);
+                        }
+                    }
+                }
             }
-        }, Constants.GAME_START_DELAY);
+        };
+        movementTimer.start();
     }
 
     private void startTimers() {
